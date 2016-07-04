@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="50" tileheight="50" nextobjectid="1">
+ <tileset firstgid="1" name="dock" tilewidth="50" tileheight="50" tilecount="36" columns="12">
+  <image source="dock.png" width="600" height="178"/>
+ </tileset>
+ <layer name="cellLayer" width="10" height="10">
+  <data encoding="csv">
+10,11,10,11,10,11,10,11,10,11,
+22,23,22,23,22,23,22,23,22,23,
+10,11,10,11,10,11,10,11,10,11,
+22,23,22,23,22,23,22,23,22,23,
+10,11,10,11,10,11,10,11,10,11,
+22,23,22,23,22,23,22,23,22,23,
+10,11,10,11,10,11,10,11,10,11,
+22,23,22,23,22,23,22,23,22,23,
+10,11,10,11,10,11,10,11,10,11,
+22,23,22,23,22,23,22,23,22,23
+</data>
+ </layer>
+</map>
