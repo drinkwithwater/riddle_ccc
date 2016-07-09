@@ -114,7 +114,8 @@ cc.Class({
                 this.updateStand(dt);
                 return ;
             }else if(curInput.type==InputType.MOVE){
-                if(!this.cellManager.canMove(curInput.cell)){
+                var cellDistance=thisPoint.cellFarFrom(curInput.cell);
+                if((cellDistance>0)&&(!this.cellManager.canMove(curInput.cell))){
                     // curInput.cell can not be move to
                     this.userInputList.clear();
                     this.updateStand(dt);
