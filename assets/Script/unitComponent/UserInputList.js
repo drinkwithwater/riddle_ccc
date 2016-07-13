@@ -15,11 +15,11 @@ cc.Class({
     },
 
     add:function(inputObject){
-        this.inputArray.append(inputObject);
+        this.inputArray.push(inputObject);
     },
     shift:function(){
         this.currentIndex+=1;
-        if(this.currentIndex>=inputArray.length){
+        if(this.currentIndex>=this.inputArray.length){
             this.inputArray=[];
             return null;
         }else{
@@ -31,7 +31,7 @@ cc.Class({
         this.currentIndex=0;
     },
     isFinished:function(){
-        return this.currentIndex>=inputArray.length;
+        return this.currentIndex>=this.inputArray.length;
     },
     getCurrentInput:function(){
         return this.inputArray[this.currentIndex]

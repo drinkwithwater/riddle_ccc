@@ -4,4 +4,7 @@ cc.Class({
     properties: {
     },
 
+    initByNode:function(nodeBase,point){
+        //TODO
+    },
 });

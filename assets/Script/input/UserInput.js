@@ -1,13 +1,11 @@
 var InputType={
-    START:1,
     MOVE:2,
     OPER:3,
-    END:4
 }
-var InputObject=function(cell,targetId,type){
+var InputObject=function(type,cell,targetId){
+    this.type=type;
     this.cell=cell;
     this.targetId=targetId;
-    this.type=type;
 }
 module.exports={
     InputType:InputType,

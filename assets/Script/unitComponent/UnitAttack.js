@@ -15,6 +15,7 @@ cc.Class({
 
     // call by UnitMove
     canMove:function(){
+        return true;
     },
 
     // attack when CD end

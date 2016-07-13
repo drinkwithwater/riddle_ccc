@@ -8,10 +8,37 @@ cc.Class({
 
     properties: {
         slideState:0,
+        nodeBase:null,
     },
 
-    // use this for initialization
-    onLoad: function () {
+
+    // Override
+    getCellManager:function(){
+        return this.nodeBase.cellManager;
+        /*
+        if(this.cellManager==null){
+            this.cellManager=this.getComponent("UnitBase").cellManager;
+        }
+        return this.cellManager;*/
+    },
+
+    // Override
+    changeCell:function(oldCell,newCell){
+        this.nodeBase.cellChangeHandler(oldCell,newCell);
+    },
+
+    // Override
+    initByNode:function(nodeBase,cell){
+        var cellManager=nodeBase.cellManager;
+        this.cellManager=cellManager;
+        this.nodeBase=nodeBase;
+
+        this.cell.x=cell.x;
+        this.cell.y=cell.y;
+        var point=cellManager.cellToPoint(cell);
+        this.point.x=point.x;
+        this.point.y=point.y;
+
     },
 
     // slide to a destination point, private function
@@ -66,19 +93,19 @@ cc.Class({
 
     // move to the cell of itself
     moveSelfCell:function(selfCell,offset){
-        var dstPoint=this.cellManager.cellToPoint(selfCell);
+        var dstPoint=this.getCellManager().cellToPoint(selfCell);
         this.pointSlide(dstPoint,offset);
     },
 
     // move to the cell near self
     moveNearCell:function(nearCell,offset){
-        var dstPoint=this.cellManager.cellToPoint(nearCell);
+        var dstPoint=this.getCellManager().cellToPoint(nearCell);
         this.pointSlide(dstPoint,offset);
         this.updateCell();
     },
 
     isStanding:function(){
-        var centerPoint=this.cellManager.cellToPoint(this.cell);
+        var centerPoint=this.getCellManager().cellToPoint(this.cell);
         if(0==this.pointFarFrom(centerPoint)){
             return true;
         }else{

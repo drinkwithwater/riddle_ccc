@@ -3,8 +3,9 @@ const InputObject=require("UserInput").InputObject;
 const InputType=require("UserInput").InputType;
 const UnitAttack=require("UnitAttack");
 const SlidePoint=require("SlidePoint");
-const UnitTypeComponent=require("UnitTypeComponent");
+const UnitAttributes=require("UnitAttributes");
 const CellManager=require("CellManager");
+const UnitBase=require("UnitBase")
 cc.Class({
     extends: cc.Component,
 
@@ -25,41 +26,49 @@ cc.Class({
             type:SlidePoint,
             default:null,
         },
-        unitTypeComponent:{
-            type:UnitTypeComponent,
+        unitAttr:{
+            type:UnitAttributes,
             default:null,
         },
         moveFlag:false,
         //
-        cellManager:{
-            type:CellManager,
+        unitBase:{
+            type:UnitBase,
             default:null,
         }
     },
 
     // use this for initialization
     onLoad: function () {
-        this.userInputList=this.node.getComponent("UserInputList");
+        this.userInputList=this.getComponent("UserInputList");
         this.userInputList.clear();
-        this.unitAttack=this.node.getComponent("UnitAttack");
-        this.slidePoint=this.node.getComponent("SlidePoint");
+        this.unitAttack=this.getComponent("UnitAttack");
+        this.slidePoint=this.getComponent("SlidePoint");
+        this.unitBase=this.getComponent("UnitBase");
+        this.unitAttr=this.getComponent("UnitAttributes");
     },
 
-    // call by the owner unit
-    initByUnit:function(){
+
+
+    updatePosition:function(){
+        var positionAR=this.unitBase.cellManager.pointToPositionAR(this.slidePoint.point);
+        this.node.attr({
+            x:positionAR.x,
+            y:positionAR.y
+        });
     },
-
-
     // private
     updateStand:function(dt){
-        var offset=dt*this.unitTypeComponent.getSpeed();
+        var offset=dt*this.unitAttr.getSpeed();
         var thisPoint=this.slidePoint;
         thisPoint.moveSelfCell(thisPoint.cell,offset);
+        this.updatePosition();
     },
     // private
     updateMove:function(curInput,nextInput,dt){
+        var thisPoint=this.slidePoint;
         var cellDistance=thisPoint.cellFarFrom(curInput.cell);
-        var offset=dt*this.unitTypeComponent.getSpeed();
+        var offset=dt*this.unitAttr.getSpeed();
         if(cellDistance==0){
             this.userInputList.shift();
             if(!cc.js.isObject(nextInput)){
@@ -70,13 +79,14 @@ cc.Class({
                 this.updateStand(dt);
                 return ;
             }else if(nextInput.type==InputType.MOVE){
-                if(!this.cellManager.canMove(nextInput.cell)){
+                if(!this.unitBase.unitManager.canMove(nextInput.cell)){
                     this.userInputList.clear();
                     this.updateStand(dt);
                     return ;
                 }else{
                     thisPoint.moveNearCell(nextInput.cell,offset);
                 }
+            }else{
             }
         }else if(cellDistance==1){
             thisPoint.moveNearCell(curInput.cell,offset);
@@ -85,7 +95,9 @@ cc.Class({
         }else{
             this.userInputList.clear();
             this.updateStand(dt);
+            return ;
         }
+        this.updatePosition();
     },
     // private
     updateOper:function(curInput,nextInput,dt){
@@ -99,6 +111,9 @@ cc.Class({
 
     // called every frame, uncomment this function to activate update callback
     update: function (dt) {
+        if(!this.unitBase.initFinished){
+            return ;
+        }
         if(!this.unitAttack.canMove()){
             // when the unit is attacking, it can not move;
             return ;
@@ -114,8 +129,8 @@ cc.Class({
                 this.updateStand(dt);
                 return ;
             }else if(curInput.type==InputType.MOVE){
-                var cellDistance=thisPoint.cellFarFrom(curInput.cell);
-                if((cellDistance>0)&&(!this.cellManager.canMove(curInput.cell))){
+                var cellDistance=this.slidePoint.cellFarFrom(curInput.cell);
+                if((cellDistance>0)&&(!this.unitBase.unitManager.canMove(curInput.cell))){
                     // curInput.cell can not be move to
                     this.userInputList.clear();
                     this.updateStand(dt);
@@ -125,7 +140,7 @@ cc.Class({
                     return ;
                 }
             }else if(curInput.type==InputType.OPER){
-                if(!cc.js.isObject(this.unitManager.unit$(curInput.cell))){
+                if(!cc.js.isObject(this.unitBase.unitManager.unit$(curInput.cell))){
                     // no unit in curInput.cell
                     this.userInputList.clear();
                     this.updateStand(dt);

@@ -1,22 +1,29 @@
+const CellManager=require("CellManager");
+const UnitManager=require("UnitManager");
 cc.Class({
     extends: cc.Component,
 
     properties: {
-        tiledNode:{
-            type:cc.TiledMap,
+        cellManager:{
+            type:CellManager,
             default:null,
         },
-        cellRange:{
-            type:cc.Vec2,
-            default:cc.p(10,10)
+        unitManager:{
+            type:UnitManager,
+            default:null,
         },
         timeSum:{
             default:0
-        }
+        },
     },
 
     // use this for initialization
     onLoad: function () {
+    },
+
+    loadMap:function(){
+        this.cellManager.initByNode();
+        this.unitManager.initByNode();
     },
 
     // called every frame, uncomment this function to activate update callback
