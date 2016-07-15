@@ -6,7 +6,7 @@ cc.Class({
 
     properties: {
         unitId:{
-            type:Number,
+            type:cc.Integer,
             default:0,
         },
         cellManager:{

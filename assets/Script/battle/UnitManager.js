@@ -1,5 +1,7 @@
 const CellManager=require("CellManager");
 const BattleFieldComponent=require("BattleFieldComponent");
+const riddleUtil=require("riddleUtil");
+const _=require("underscore");
 cc.Class({
     extends: cc.Component,
 
@@ -40,6 +42,7 @@ cc.Class({
         this.idToUnit[0]=sprite;
         this.cellToUnit[0][0]=sprite;
         sprite.getComponent("UnitBase").initByUnitManager(this,cc.p(0,0),0);
+        riddleUtil.test.unit=sprite;
     },
     createUnit:function(){
         // todo
@@ -47,7 +50,7 @@ cc.Class({
 
     canMove:function(cell){
         var unit=this.unit$(cell);
-        if(cc.js.isObject(unit)){
+        if(_.isObject(unit)){
             return false;
         }else{
             return true;
@@ -61,16 +64,16 @@ cc.Class({
 
     unit$:function(a,b){
         if(arguments.length==1){
-            if(cc.js.isString(a)||cc.js.isNumber(a)){
+            if(_.isString(a)||_.isNumber(a)){
                 return this.idToUnit[a];
-            }else if(cc.js.isObject(a)){
+            }else if(_.isObject(a)){
                 return this.unit$(a.x,a.y);
             }else{
                 return null;
             }
         }else if(arguments.length==2){
             var xLine=this.cellToUnit[a];
-            if(cc.js.isArray(xLine)){
+            if(_.isArray(xLine)){
                 return xLine[b];
             }else{
                 return null;

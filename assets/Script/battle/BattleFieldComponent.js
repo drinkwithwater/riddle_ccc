@@ -19,6 +19,7 @@ cc.Class({
 
     // use this for initialization
     onLoad: function () {
+        this.loadMap()
     },
 
     loadMap:function(){

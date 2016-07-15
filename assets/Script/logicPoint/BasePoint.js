@@ -5,11 +5,9 @@ cc.Class({
 
     properties: {
         cell:{
-            type:cc.Vec2,
             default:cc.p(0,0),
         },
         point:{
-            type:cc.Vec2,
             default:cc.p(0,0),
         },
         cellManager:{

@@ -4,7 +4,7 @@ cc.Class({
     properties: {
         inputArray:[],
         currentIndex:{
-            type:Number,
+            type:cc.Integer,
             default:0,
         },
     },

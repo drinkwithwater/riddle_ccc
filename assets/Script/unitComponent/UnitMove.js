@@ -6,6 +6,9 @@ const SlidePoint=require("SlidePoint");
 const UnitAttributes=require("UnitAttributes");
 const CellManager=require("CellManager");
 const UnitBase=require("UnitBase")
+const riddleUtil=require("riddleUtil");
+const _=require("underscore");
+const FIX_RANGE=5;
 cc.Class({
     extends: cc.Component,
 
@@ -18,10 +21,11 @@ cc.Class({
             type:UnitAttack,
             default:null,
         },
+        /*
         moveDirect:{
             type:cc.Vec2,
             default:null,
-        },
+        },*/
         slidePoint:{
             type:SlidePoint,
             default:null,
@@ -71,7 +75,7 @@ cc.Class({
         var offset=dt*this.unitAttr.getSpeed();
         if(cellDistance==0){
             this.userInputList.shift();
-            if(!cc.js.isObject(nextInput)){
+            if(!_.isObject(nextInput)){
                 this.userInputList.clear();
                 this.updateStand(dt);
                 return ;
@@ -91,7 +95,17 @@ cc.Class({
         }else if(cellDistance==1){
             thisPoint.moveNearCell(curInput.cell,offset);
         }else if(cellDistance==2){
-            //TODO
+            var unitManager=this.unitBase.unitManager;
+            var path=riddleUtil.shortestPath(thisPoint.cell,curInput.cell,function(cell){
+                return unitManager.canMove(cell);
+            });
+            if(path.length>=2 && path.length<=FIX_RANGE){
+                thisPoint.moveNearCell(path[1],offset);
+            }else{
+                this.userInputList.clear();
+                this.updateStand(dt);
+                return ;
+            }
         }else{
             this.userInputList.clear();
             this.updateStand(dt);
@@ -124,7 +138,7 @@ cc.Class({
         }else{
             var curInput=this.userInputList.getCurrentInput();
             var nextInput=this.userInputList.getNextInput();
-            if(!cc.js.isObject(curInput)){
+            if(!_.isObject(curInput)){
                 this.userInputList.clear();
                 this.updateStand(dt);
                 return ;
@@ -140,7 +154,7 @@ cc.Class({
                     return ;
                 }
             }else if(curInput.type==InputType.OPER){
-                if(!cc.js.isObject(this.unitBase.unitManager.unit$(curInput.cell))){
+                if(!_.isObject(this.unitBase.unitManager.unit$(curInput.cell))){
                     // no unit in curInput.cell
                     this.userInputList.clear();
                     this.updateStand(dt);
@@ -156,7 +170,8 @@ cc.Class({
     isMoving:function(){
         return this.moveFlag;
     },
+    /*
     getMoveDirect:function(){
         return this.moveDirect;
-    }
+    }*/
 });

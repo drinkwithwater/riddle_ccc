@@ -7,11 +7,9 @@ cc.Class({
             default:null,
         },
         cellRange:{
-            type:cc.Vec2,
             default:cc.p(10,10),
         },
         cellSize:{
-            type:cc.Vec2,
             default:cc.p(10,10),
         },
     },

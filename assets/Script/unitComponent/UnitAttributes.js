@@ -2,7 +2,7 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        speed:10,
+        speed:50,
     },
 
     // use this for initialization

@@ -1,5 +1,6 @@
 const BattleFieldComponent=require("BattleFieldComponent");
 const riddleUtil=require("riddleUtil");
+const _=require("underscore")
 cc.Class({
     extends: cc.Component,
 
@@ -13,12 +14,10 @@ cc.Class({
             default:null,
         },
         lastLoction1:{
-            type:cc.Vec2,
-            default:null
+            default:cc.p(0,0)
         },
         lastLocation2:{
-            type:cc.Vec2,
-            default:null
+            default:cc.p(0,0)
         },
         // for mouse's right button
         rightDown:false,
@@ -39,7 +38,7 @@ cc.Class({
         this.lastLocation2=location2;
     },
     tran:function(location1,location2){
-        if(cc.js.isObject(location2)){
+        if(_.isObject(location2)){
             var a=riddleUtil.euDistance(location1,this.lastLocation1);
             var b=riddleUtil.euDistance(location2,this.lastLocation2);
             if(b<a){
@@ -52,7 +51,7 @@ cc.Class({
             location1.x-this.lastLocation1.x,
             location1.y-this.lastLocation1.y,
         );
-        if(cc.js.isObject(location2) && cc.js.isObject(this.lastLocation2)){
+        if(_.isObject(location2) && _.isObject(this.lastLocation2)){
             var beforeDistance=riddleUtil.euDistance(
                 this.lastLocation1,this.lastLocation2
             );

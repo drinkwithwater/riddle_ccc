@@ -3,6 +3,7 @@ const UnitManager=require("UnitManager");
 const UserInputList=require("UserInputList");
 const InputObject=require("UserInput").InputObject;
 const InputType=require("UserInput").InputType;
+const _=require("underscore");
 var OperObject=function(){
     this.startFlag=false;
     this.unit=null;
@@ -35,8 +36,7 @@ cc.Class({
             default:null,
         },
         preCell:{
-            type:cc.Vec2,
-            default:null
+            default:new cc.Vec2(-1,-1),
         },
         oper:{
             type:OperObject,
@@ -59,7 +59,7 @@ cc.Class({
     startCell:function(cell){
         // Todo find unit
         var startUnit=this.unitManager.unit$(cell);
-        if(cc.js.isObject(startUnit)){
+        if(_.isObject(startUnit)){
             this.oper.start(startUnit);
             this.preCell=cell;
         }
@@ -68,7 +68,7 @@ cc.Class({
         if(!this.isStart()){
             return ;
         }
-        if(cc.js.isObject(this.preCell)){
+        if(_.isObject(this.preCell)){
             if(cell.x==this.preCell.x&&cell.y==this.preCell.y){
                 return ;
             }
