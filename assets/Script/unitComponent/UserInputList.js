@@ -3,10 +3,7 @@ cc.Class({
 
     properties: {
         inputArray:[],
-        currentIndex:{
-            type:cc.Integer,
-            default:0,
-        },
+        currentIndex:0,
     },
 
     // use this for initialization
@@ -18,12 +15,11 @@ cc.Class({
         this.inputArray.push(inputObject);
     },
     shift:function(){
-        this.currentIndex+=1;
         if(this.currentIndex>=this.inputArray.length){
             this.inputArray=[];
             return null;
         }else{
-            return this.inputArray[this.currentIndex];
+            return this.inputArray[this.currentIndex++];
         }
     },
     clear:function(){

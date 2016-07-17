@@ -39,7 +39,7 @@ cc.Class({
         unitBase:{
             type:UnitBase,
             default:null,
-        }
+        },
     },
 
     // use this for initialization
@@ -52,21 +52,21 @@ cc.Class({
         this.unitAttr=this.getComponent("UnitAttributes");
     },
 
-
-
-    updatePosition:function(){
-        var positionAR=this.unitBase.cellManager.pointToPositionAR(this.slidePoint.point);
-        this.node.attr({
-            x:positionAR.x,
-            y:positionAR.y
-        });
+    onStartOper:function(operContext){
+        // TODO
     },
+
+    updateCancel:function(dt){
+        this.userInputList.clear();
+        this.updateStand(dt);
+    },
+
     // private
     updateStand:function(dt){
         var offset=dt*this.unitAttr.getSpeed();
         var thisPoint=this.slidePoint;
         thisPoint.moveSelfCell(thisPoint.cell,offset);
-        this.updatePosition();
+        this.slidePoint.updatePosition();
     },
     // private
     updateMove:function(curInput,nextInput,dt){
@@ -76,16 +76,14 @@ cc.Class({
         if(cellDistance==0){
             this.userInputList.shift();
             if(!_.isObject(nextInput)){
-                this.userInputList.clear();
-                this.updateStand(dt);
+                this.updateCancel(dt);
                 return ;
             }else if(nextInput.type==InputType.OPER){
                 this.updateStand(dt);
                 return ;
             }else if(nextInput.type==InputType.MOVE){
-                if(!this.unitBase.unitManager.canMove(nextInput.cell)){
-                    this.userInputList.clear();
-                    this.updateStand(dt);
+                if(!this.unitBase.cellManager.canMove(nextInput.cell)){
+                    this.updateCancel(dt);
                     return ;
                 }else{
                     thisPoint.moveNearCell(nextInput.cell,offset);
@@ -95,23 +93,21 @@ cc.Class({
         }else if(cellDistance==1){
             thisPoint.moveNearCell(curInput.cell,offset);
         }else if(cellDistance==2){
-            var unitManager=this.unitBase.unitManager;
+            var cellManager=this.unitBase.cellManager;
             var path=riddleUtil.shortestPath(thisPoint.cell,curInput.cell,function(cell){
-                return unitManager.canMove(cell);
+                return cellManager.canMove(cell);
             });
             if(path.length>=2 && path.length<=FIX_RANGE){
                 thisPoint.moveNearCell(path[1],offset);
             }else{
-                this.userInputList.clear();
-                this.updateStand(dt);
+                this.updateCancel(dt);
                 return ;
             }
         }else{
-            this.userInputList.clear();
-            this.updateStand(dt);
+            this.updateCancel(dt);
             return ;
         }
-        this.updatePosition();
+        this.slidePoint.updatePosition();
     },
     // private
     updateOper:function(curInput,nextInput,dt){
@@ -139,15 +135,13 @@ cc.Class({
             var curInput=this.userInputList.getCurrentInput();
             var nextInput=this.userInputList.getNextInput();
             if(!_.isObject(curInput)){
-                this.userInputList.clear();
-                this.updateStand(dt);
+                this.updateCancel(dt);
                 return ;
             }else if(curInput.type==InputType.MOVE){
                 var cellDistance=this.slidePoint.cellFarFrom(curInput.cell);
-                if((cellDistance>0)&&(!this.unitBase.unitManager.canMove(curInput.cell))){
+                if((cellDistance>0)&&(!this.unitBase.cellManager.canMove(curInput.cell))){
                     // curInput.cell can not be move to
-                    this.userInputList.clear();
-                    this.updateStand(dt);
+                    this.updateCancel(dt);
                     return ;
                 }else{
                     this.updateMove(curInput,nextInput,dt);
@@ -156,8 +150,7 @@ cc.Class({
             }else if(curInput.type==InputType.OPER){
                 if(!_.isObject(this.unitBase.unitManager.unit$(curInput.cell))){
                     // no unit in curInput.cell
-                    this.userInputList.clear();
-                    this.updateStand(dt);
+                    this.updateCancel(dt);
                     return ;
                 }else{
                     this.updateOper(curInput,nextInput,dt);

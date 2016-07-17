@@ -4,7 +4,7 @@ const UserInputList=require("UserInputList");
 const InputObject=require("UserInput").InputObject;
 const InputType=require("UserInput").InputType;
 const _=require("underscore");
-var OperObject=function(){
+var OperContext=function(){
     this.startFlag=false;
     this.unit=null;
     this.start=function(unit){
@@ -14,9 +14,16 @@ var OperObject=function(){
     this.oper=function(input){
         this.unit.getComponent("UserInputList").add(input);
     }
-    this.cancel=function(){
+    this.ctrlCancel=function(){
+        // TODO
         this.startFlag=false;
         this.unit=null;
+    }
+    this.unitCancel=function(){
+        // TODO
+    }
+    this.idSame=function(unitId){
+        return this.unit.getComponent("UnitBase").unitId==unitId;
     }
 }
 cc.Class({
@@ -39,7 +46,7 @@ cc.Class({
             default:new cc.Vec2(-1,-1),
         },
         oper:{
-            type:OperObject,
+            type:OperContext,
             default:null,
         },
     },
@@ -47,7 +54,7 @@ cc.Class({
     // use this for initialization
     onLoad: function () {
         this.bindMouseListener();
-        this.oper=new OperObject();
+        this.oper=new OperContext();
     },
 
     /********************
@@ -68,19 +75,38 @@ cc.Class({
         if(!this.isStart()){
             return ;
         }
-        if(_.isObject(this.preCell)){
-            if(cell.x==this.preCell.x&&cell.y==this.preCell.y){
-                return ;
-            }
+        if(cell.x==this.preCell.x&&cell.y==this.preCell.y){
+            return ;
         }
-        this.preCell=cell;
-        var input=new InputObject(InputType.MOVE,cell);
-        this.oper.oper(input);
         console.log("over cell : ",cell.x,cell.y);
+        
+        this.preCell=cell;
+        
+        var unit=this.unitManager.unit$(cell);
+        if(_.isObject(unit)){
+            var unitId=unit.getComponent("UnitBase").unitId;
+            if(this.oper.idSame(unitId)){
+                // over oper unit
+                var input=new InputObject(InputType.MOVE,cell);
+                this.oper.oper(input);
+            }else{
+                // over a unit
+                var input=new InputObject(InputType.OPER,cell,unitId);
+                this.oper.oper(input);
+            }
+        }else if(this.cellManager.canMove(cell)){
+            // over a empty cell
+            var input=new InputObject(InputType.MOVE,cell);
+            this.oper.oper(input);
+        }else{
+            // over a unmovable cell
+            this.cancel();
+            return ;
+        }
     },
     cancel:function(){
-        this.oper.cancel();
-        this.preCell=null;
+        this.oper.ctrlCancel();
+        this.preCell=cc.p(-1,-1);
     },
 
     /****************

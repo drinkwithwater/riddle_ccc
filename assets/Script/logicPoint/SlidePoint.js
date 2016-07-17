@@ -12,15 +12,6 @@ cc.Class({
     },
 
 
-    // Override
-    getCellManager:function(){
-        return this.nodeBase.cellManager;
-        /*
-        if(this.cellManager==null){
-            this.cellManager=this.getComponent("UnitBase").cellManager;
-        }
-        return this.cellManager;*/
-    },
 
     // Override
     changeCell:function(oldCell,newCell){
@@ -93,19 +84,19 @@ cc.Class({
 
     // move to the cell of itself
     moveSelfCell:function(selfCell,offset){
-        var dstPoint=this.getCellManager().cellToPoint(selfCell);
+        var dstPoint=this.cellManager.cellToPoint(selfCell);
         this.pointSlide(dstPoint,offset);
     },
 
     // move to the cell near self
     moveNearCell:function(nearCell,offset){
-        var dstPoint=this.getCellManager().cellToPoint(nearCell);
+        var dstPoint=this.cellManager.cellToPoint(nearCell);
         this.pointSlide(dstPoint,offset);
         this.updateCell();
     },
 
     isStanding:function(){
-        var centerPoint=this.getCellManager().cellToPoint(this.cell);
+        var centerPoint=this.cellManager.cellToPoint(this.cell);
         if(0==this.pointFarFrom(centerPoint)){
             return true;
         }else{

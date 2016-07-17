@@ -47,7 +47,7 @@ cc.Class({
                 location2=temp;
             }
         }
-        this.battleField.moveTran(
+        this.moveTran(
             location1.x-this.lastLocation1.x,
             location1.y-this.lastLocation1.y,
         );
@@ -59,7 +59,7 @@ cc.Class({
                 location1,location2
             );
 
-            this.battleField.scaleTran(afterDistance/beforeDistance,location1);
+            this.scaleTran(afterDistance/beforeDistance,location1);
         }
         this.lastLocation1=location1;
         this.lastLoctaion2=location2;
@@ -72,6 +72,38 @@ cc.Class({
         }else{
         }
     },
+    /***********************
+    *** tran api ****
+    ***********************/
+
+    // transform (x,y)->(x+dx,y+dy)
+    moveTran:function(dx,dy){
+        var battleNode=this.node;
+        var positionX=battleNode.x+dx;
+        var positionY=battleNode.y+dy;
+        // todo check range
+        battleNode.attr({
+            x:positionX,
+            y:positionY
+        });
+    },
+    // transform (scaleX,scaleY)->(scaleX*scale,scaleY*scale)
+    scaleTran:function(scale,point){
+        var battleNode=this.node;
+        var positionX=battleNode.x+battleNode.getScaleX()*point.x*(1-scale);
+        var positionY=battleNode.y+battleNode.getScaleY()*point.y*(1-scale);
+        // todo check range
+        battleNode.attr({
+            scaleX:scale*battleNode.getScaleX(),
+            scaleY:scale*battleNode.getScaleY(),
+            x:positionX,
+            y:positionY
+        });
+    },
+    
+    /***********************
+    *** tran listener ****
+    ***********************/
     createMobileListener:function(){
         // todo
         var thisVar=this;
@@ -163,9 +195,9 @@ cc.Class({
             var point=event.getLocation();
             var point=tran.node.convertToNodeSpaceAR(point);
             if(scroll>=0){
-                tran.battleField.scaleTran(1.25,point);
+                tran.scaleTran(1.25,point);
             }else{
-                tran.battleField.scaleTran(0.8,point);
+                tran.scaleTran(0.8,point);
             }
         });
     }

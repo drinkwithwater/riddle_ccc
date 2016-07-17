@@ -58,7 +58,7 @@ var riddleUtil={
             expandList=_.filter(expandList,function(newPoint){
                 var x=newPoint.x;
                 var y=newPoint.y;
-                if(!canMoveFunc(x,y)) return false;
+                if(!canMoveFunc({x:x,y:y})) return false;
                 if(closeHash[hash(point)]) return false;
                 return true;
             });
@@ -97,6 +97,11 @@ var riddleUtil={
         return [];
     },
     test:{
+        dosth:function(){
+            var bm=this.bulletManager;
+            var unit=this.unit;
+            return bm.unitCreateBullet(unit,1);
+        }
     }
 }
 module.exports=riddleUtil;

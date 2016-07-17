@@ -18,41 +18,31 @@ cc.Class({
 
     // abstract, to be implemented
     initByNode:function(ownerNode,cell,point){
-        /*
-        this.cell.x=cell.x;
-        this.cell.y=cell.y;
-        if(!cc.js.isObject(point)){
-            var point=cellManager.cellToPoint(cell);
-        }
-        this.point.x=point.x;
-        this.point.y=point.y;
-        this.cellManager=cellManager;*/
         console.log("error:getCellManager is not implemented");
-    },
-
-    // abstract, to be implemented
-    getCellManager:function(){
-        /*
-        if(this.cellManager==null){
-            this.cellManager=this.getComponent("UnitBase");
-        }
-        return this.cellManager;*/
-        console.log("error:getCellManager is not implemented");
-        return null;
     },
 
     changeCell:function(oldCell,newCell){
         console.log("error:getCellManager is not implemented");
     },
 
+    // update node position by point
+    updatePosition:function(){
+        var positionAR=this.cellManager.pointToPositionAR(this.point);
+        this.node.attr({
+            x:positionAR.x,
+            y:positionAR.y
+        });
+    },
+
     // update cell by point, private function
     updateCell:function(){
-        var newCell=this.getCellManager().pointToCell(this.point);
+        var newCell=this.cellManager.pointToCell(this.point);
         var oldCell=this.cell;
         if(oldCell.x!=newCell.x||oldCell.y!=newCell.y){
             this.changeCell(oldCell,newCell);
         }
         this.cell=newCell;
+        this.updatePosition();
     },
 
     cellFarFrom:function(dstCell){

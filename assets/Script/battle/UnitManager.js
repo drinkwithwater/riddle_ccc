@@ -43,6 +43,11 @@ cc.Class({
         this.cellToUnit[0][0]=sprite;
         sprite.getComponent("UnitBase").initByUnitManager(this,cc.p(0,0),0);
         riddleUtil.test.unit=sprite;
+
+        var sprite2=this.node.getChildByName("testSprite2");
+        this.idToUnit[1]=sprite2;
+        this.cellToUnit[5][5]=sprite2;
+        sprite2.getComponent("UnitBase").initByUnitManager(this,cc.p(5,5),1);
     },
     createUnit:function(){
         // todo

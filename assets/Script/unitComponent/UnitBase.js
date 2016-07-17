@@ -13,21 +13,20 @@ cc.Class({
             type:CellManager,
             default:null,
         },
-        UnitManager:{
+        unitManager:{
             type:UnitManager,
             default:null,
         },
         initFinished:false,
     },
 
-    // use this for initialization
-    onLoad: function () {
-    },
 
-    initByUnitManager:function(unitManager,cell,id){
+    initByUnitManager:function(unitManager,cell,unitId){
         var cellManager=unitManager.cellManager;
         this.cellManager=cellManager;
         this.unitManager=unitManager;
+        // set unit id
+        this.unitId=unitId;
         // set logic point
         this.getComponent("SlidePoint").initByNode(this,cell);
         // set sprite position

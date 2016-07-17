@@ -1,5 +1,6 @@
 const CellManager=require("CellManager");
 const UnitManager=require("UnitManager");
+const BulletManager=require("BulletManager");
 cc.Class({
     extends: cc.Component,
 
@@ -10,6 +11,10 @@ cc.Class({
         },
         unitManager:{
             type:UnitManager,
+            default:null,
+        },
+        bulletManager:{
+            type:BulletManager,
             default:null,
         },
         timeSum:{
@@ -23,8 +28,9 @@ cc.Class({
     },
 
     loadMap:function(){
-        this.cellManager.initByNode();
-        this.unitManager.initByNode();
+        this.cellManager.initByNode(this);
+        this.unitManager.initByNode(this);
+        this.bulletManager.initByNode(this);
     },
 
     // called every frame, uncomment this function to activate update callback
@@ -34,28 +40,5 @@ cc.Class({
             this.timeSum-=1;
         }
     },
-    // transform (x,y)->(x+dx,y+dy)
-    moveTran:function(dx,dy){
-        var battleNode=this.node;
-        var positionX=battleNode.x+dx;
-        var positionY=battleNode.y+dy;
-        // todo check range
-        battleNode.attr({
-            x:positionX,
-            y:positionY
-        });
-    },
-    // transform (scaleX,scaleY)->(scaleX*scale,scaleY*scale)
-    scaleTran:function(scale,point){
-        var battleNode=this.node;
-        var positionX=battleNode.x+battleNode.getScaleX()*point.x*(1-scale);
-        var positionY=battleNode.y+battleNode.getScaleY()*point.y*(1-scale);
-        // todo check range
-        battleNode.attr({
-            scaleX:scale*battleNode.getScaleX(),
-            scaleY:scale*battleNode.getScaleY(),
-            x:positionX,
-            y:positionY
-        });
-    },
+    
 });

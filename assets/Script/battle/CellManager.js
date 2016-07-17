@@ -1,3 +1,4 @@
+const _=require("underscore");
 cc.Class({
     extends: cc.Component,
 
@@ -12,6 +13,8 @@ cc.Class({
         cellSize:{
             default:cc.p(10,10),
         },
+        // UnitManager
+        unitManager:null,
     },
 
     // use this for initialization
@@ -19,13 +22,23 @@ cc.Class({
     },
 
     // called by BattleFieldComponent
-    initByNode:function(){
+    initByNode:function(battleField){
         var mapTiled=this.node.getComponent("cc.TiledMap");
         // set cellRange
         var mapRange=mapTiled.getMapSize();
         this.cellRange=cc.p(mapRange.width,mapRange.height);
+        this.unitManager=battleField.unitManager;
     },
 
+    canMove:function(cell){
+        // todo, check cell in tiled
+        var unit=this.unitManager.unit$(cell);
+        if(_.isObject(unit)){
+            return false;
+        }else{
+            return true;
+        }
+    },
 
 
 
