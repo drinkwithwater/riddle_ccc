@@ -4,8 +4,11 @@ const UserInputList=require("UserInputList");
 const InputObject=require("UserInput").InputObject;
 const InputType=require("UserInput").InputType;
 const _=require("underscore");
-var OperContext=function(){
+const COLOR_CHOOSE=cc.color(111,111,0);
+const COLOR_IDLE=cc.color(255,255,255);
+var OperContext=function(ctrl){
     this.startFlag=false;
+    this.ctrl=ctrl;
     this.unit=null;
     this.start=function(unit){
         this.startFlag=true;
@@ -14,13 +17,17 @@ var OperContext=function(){
     this.oper=function(input){
         this.unit.getComponent("UserInputList").add(input);
     }
-    this.ctrlCancel=function(){
-        // TODO
+    this.onCtrlCancel=function(){
+        if(_.isObject(this.unit)){
+            this.unit.getComponent("UnitMove").cancelOper();
+        }
         this.startFlag=false;
         this.unit=null;
     }
-    this.unitCancel=function(){
-        // TODO
+    this.onUnitCancel=function(){
+        this.ctrl.cancelOper();
+        this.startFlag=false;
+        this.unit=null;
     }
     this.idSame=function(unitId){
         return this.unit.getComponent("UnitBase").unitId==unitId;
@@ -54,7 +61,7 @@ cc.Class({
     // use this for initialization
     onLoad: function () {
         this.bindMouseListener();
-        this.oper=new OperContext();
+        this.oper=new OperContext(this);
     },
 
     /********************
@@ -69,6 +76,7 @@ cc.Class({
         if(_.isObject(startUnit)){
             this.oper.start(startUnit);
             this.preCell=cell;
+            this.focusItem.color=COLOR_CHOOSE;
         }
     },
     overCell:function(cell){
@@ -105,8 +113,13 @@ cc.Class({
         }
     },
     cancel:function(){
-        this.oper.ctrlCancel();
+        this.oper.onCtrlCancel();
+        this.cancelOper();
+    },
+    // call by oper
+    cancelOper:function(){
         this.preCell=cc.p(-1,-1);
+        this.focusItem.color=COLOR_IDLE;
     },
 
     /****************

@@ -40,6 +40,7 @@ cc.Class({
             type:UnitBase,
             default:null,
         },
+        oper:null,
     },
 
     // use this for initialization
@@ -56,7 +57,16 @@ cc.Class({
         // TODO
     },
 
+    // call by oper
+    cancelOper:function(){
+        this.oper=null;
+    },
+
     updateCancel:function(dt){
+        if(_.isObject(this.oper)){
+            this.oper.onUnitCancel();
+            this.cancelOper();
+        }
         this.userInputList.clear();
         this.updateStand(dt);
     },
@@ -92,11 +102,12 @@ cc.Class({
             }
         }else if(cellDistance==1){
             thisPoint.moveNearCell(curInput.cell,offset);
-        }else if(cellDistance==2){
+        }else if(cellDistance>=2 && cellDistance<=FIX_RANGE){
             var cellManager=this.unitBase.cellManager;
             var path=riddleUtil.shortestPath(thisPoint.cell,curInput.cell,function(cell){
                 return cellManager.canMove(cell);
             });
+            // TO DISCUSS
             if(path.length>=2 && path.length<=FIX_RANGE){
                 thisPoint.moveNearCell(path[1],offset);
             }else{

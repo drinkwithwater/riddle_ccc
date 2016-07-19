@@ -646,7 +646,8 @@
     "slidePoint": null,
     "unitAttr": null,
     "moveFlag": false,
-    "unitBase": null
+    "unitBase": null,
+    "oper": null
   },
   {
     "__type__": "bf6d0Rg+apA642RgXWPsYES",
@@ -657,7 +658,11 @@
     },
     "_enabled": false,
     "coolDown": 0,
-    "attackFlag": false
+    "attackFlag": false,
+    "slidePoint": null,
+    "unitManager": null,
+    "cellManager": null,
+    "bulletManager": null
   },
   {
     "__type__": "cc.Node",
@@ -825,7 +830,8 @@
     "slidePoint": null,
     "unitAttr": null,
     "moveFlag": false,
-    "unitBase": null
+    "unitBase": null,
+    "oper": null
   },
   {
     "__type__": "bf6d0Rg+apA642RgXWPsYES",
@@ -836,7 +842,11 @@
     },
     "_enabled": false,
     "coolDown": 0,
-    "attackFlag": false
+    "attackFlag": false,
+    "slidePoint": null,
+    "unitManager": null,
+    "cellManager": null,
+    "bulletManager": null
   },
   {
     "__type__": "cc.Node",
@@ -1045,6 +1055,8 @@
     "bulletTemplate": {
       "__uuid__": "1a172af3-07d1-4dc9-b9d8-dd7abbe69677"
     },
+    "cellManager": null,
+    "unitManager": null,
     "idCounter": 0,
     "idToBullet": null
   },

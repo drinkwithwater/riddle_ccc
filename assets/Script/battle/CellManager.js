@@ -31,7 +31,12 @@ cc.Class({
     },
 
     canMove:function(cell){
-        // todo, check cell in tiled
+        
+        var cellRange=this.cellRange;
+        if(cell.x<0||cell.x>=cellRange.x) return false;
+        if(cell.y<0||cell.y>=cellRange.y) return false;
+        
+        // TODO, check cell in tiled
         var unit=this.unitManager.unit$(cell);
         if(_.isObject(unit)){
             return false;
