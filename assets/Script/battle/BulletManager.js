@@ -26,7 +26,7 @@ cc.Class({
         this.unitManager=battleField.unitManager;
     },
 
-    unitCreateBullet:function(source,targetId){
+    skillCreateBullet:function(source,targetId){
         var bulletNode=cc.instantiate(this.bulletTemplate);
         var bulletId=this.idCounter++;
         riddleUtil.test.bullet=bulletNode;

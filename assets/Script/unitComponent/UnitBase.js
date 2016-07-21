@@ -25,6 +25,7 @@ cc.Class({
         var cellManager=unitManager.cellManager;
         this.cellManager=cellManager;
         this.unitManager=unitManager;
+        this.battleField=unitManager.battleField;
         // set unit id
         this.unitId=unitId;
         // set logic point

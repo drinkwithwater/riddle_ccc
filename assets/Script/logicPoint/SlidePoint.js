@@ -29,7 +29,8 @@ cc.Class({
         var point=cellManager.cellToPoint(cell);
         this.point.x=point.x;
         this.point.y=point.y;
-
+        
+        this.updatePosition();
     },
 
     // slide to a destination point, private function

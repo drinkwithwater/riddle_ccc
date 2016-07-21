@@ -418,7 +418,8 @@
     "cellToUnit": null,
     "cellManager": {
       "__id__": 9
-    }
+    },
+    "battleField": null
   },
   {
     "__type__": "cc.Node",
@@ -588,6 +589,7 @@
     "unitId": 0,
     "cellManager": null,
     "unitManager": null,
+    "bulletManager": null,
     "initFinished": false
   },
   {
@@ -656,13 +658,16 @@
     "node": {
       "__id__": 13
     },
-    "_enabled": false,
+    "_enabled": true,
     "coolDown": 0,
     "attackFlag": false,
     "slidePoint": null,
     "unitManager": null,
-    "cellManager": null,
-    "bulletManager": null
+    "bulletManager": null,
+    "hitSkill": null,
+    "moveSkill": null,
+    "standSkill": null,
+    "hurtSkill": null
   },
   {
     "__type__": "cc.Node",
@@ -772,6 +777,7 @@
     "unitId": 0,
     "cellManager": null,
     "unitManager": null,
+    "bulletManager": null,
     "initFinished": false
   },
   {
@@ -840,13 +846,16 @@
     "node": {
       "__id__": 21
     },
-    "_enabled": false,
+    "_enabled": true,
     "coolDown": 0,
     "attackFlag": false,
     "slidePoint": null,
     "unitManager": null,
-    "cellManager": null,
-    "bulletManager": null
+    "bulletManager": null,
+    "hitSkill": null,
+    "moveSkill": null,
+    "standSkill": null,
+    "hurtSkill": null
   },
   {
     "__type__": "cc.Node",

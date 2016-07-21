@@ -38,4 +38,5 @@ cc.Class({
             this.flyPoint.updatePosition();
         }
     },
+
 });

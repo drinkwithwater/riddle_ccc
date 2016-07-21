@@ -15,6 +15,7 @@ cc.Class({
         var cell=cellManager.pointToCell(point);
         this.cell.x=cell.x;
         this.cell.y=cell.y;
+        this.updatePosition();
     },
 
     // Override

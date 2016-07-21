@@ -1,57 +1,93 @@
-var SkillType={
-    NONE:0,
-    HIT:1,
-    MOVE:2,
-    STAND:3,
-    HURT:4,
-}
-var SkillBase=riddleUtil.Class.extend({
-    type:SkillType.NONE,
-    constructor:function(){
-        this._super();
+var Base=cc.Class();
+var SkillBase=cc.Class({
+    name:"SkillBase",
+    extends:Base,
+    properties:{
+        unit:null,
+        unitAttack:null,
+        bulletManager:null,
+    },
+    ctor:function(){
+        this.unit=arguments[0];
+        this.unitAttack=this.unit.getComponent("UnitAttack");
+        this.bulletManager=this.unitAttack.bulletManager;
+    },
+    standUpdate:function(dt){
+    },
+    moveUpdate:function(dt){
+    },
+    cast:function(){
+        console.log("cast skill");
+        this.bulletManager.skillCreateBullet(this.unit,this.targetId)
     },
     update:function(dt){
-    },
+    }
 });
+
 var hitState={
     BEFORE:1,
     AFTER:2,
     IDLE:3,
 }
-var HitSkill=SkillBase.extend({
-    type:SkillType.HIT,
-    unitBase:null,
-    beforeCoolTime:0,
-    afterCoolTime:0,
-    state:hitState.BEFORE,
-    constructor:function(){
-        this._super();
+var HitSkill=cc.Class({
+    extends:SkillBase,
+    properties:{
+        damageCoe:1,
+        preTime:0.5,
+        
+        startFlag:false,
+        targetId:null,
+    },
+    onUnitHit:function(targetId){
+        this.unitAttack.attackLock();
+        this.preTime=0.5;
+        this.startFlag=true;
+        this.targetId=targetId;
     },
     update:function(dt){
-        switch(this.state){
-            case hitState.BEFORE:
-                this.beforeCoolTime--;
-                if(this.beforeCoolTime==0){
-                    this.hitFunc();
-                    this.state=hitState.AFTER;
-                }
-                break;
-            case hitState.AFTER:
-                this.afterCoolTime--;
-                if(this.afterCoolTime==0){
-                    this.state=hitState.IDLE;
-                }
-                break;
-            case hitState.IDLE:
-                break;
-            default:
-                break;
+        if(this.startFlag){
+            if(this.preTime<=0){
+                this.cast();
+                this.startFlag=false;
+                this.preTime=0.5;
+                this.targetId=null;
+                this.unitAttack.attackUnlock();
+            }else{
+                this.preTime-=dt;
+            }
         }
     },
-    hitFunc=function(){
+});
+var MoveSkill=cc.Class({
+    extends:SkillBase,
+    properties:{
+        beforeCoolTime:0,
+        afterCoolTime:0,
+        state:hitState.BEFORE,
+    },
+    moveUpdate:function(dt){
+        this.coolTime-=dt;
+        if(this.coolTime<=0){
+            this.cast();
+            this.coolTime=1;
+        }
+    }
+});
+var StandSkill=cc.Class({
+    extends:SkillBase,
+    properties:{
+        coolTime:0,
+        state:hitState.BEFORE,
+    },
+    standUpdate:function(dt){
+        this.coolTime-=dt;
+        if(this.coolTime<=0){
+            this.cast();
+            this.coolTime=1;
+        }
     },
 });
 module.exports={
-    SkillType:SkillType,
-    SkillBase:SkillBase
+    SkillBase:SkillBase,
+    HitSkill:HitSkill
 }

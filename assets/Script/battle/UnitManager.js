@@ -1,5 +1,4 @@
 const CellManager=require("CellManager");
-const BattleFieldComponent=require("BattleFieldComponent");
 const riddleUtil=require("riddleUtil");
 const _=require("underscore");
 cc.Class({
@@ -19,6 +18,7 @@ cc.Class({
             type:CellManager,
             default:null,
         },
+        battleField:null,
     },
 
     // use this for initialization
@@ -26,7 +26,8 @@ cc.Class({
     },
 
     // called by BattleFieldComponent
-    initByNode:function(){
+    initByNode:function(battleField){
+        this.battleField=battleField;
         // init idToUnit
         this.idToUnit={};
         // init cellToUnit
