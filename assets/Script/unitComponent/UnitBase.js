@@ -7,25 +7,35 @@ cc.Class({
     properties: {
         unitId:{
             type:cc.Integer,
+            visible:false,
             default:0,
         },
         cellManager:{
             type:CellManager,
+            visible:false,
             default:null,
         },
         unitManager:{
             type:UnitManager,
+            visible:false,
             default:null,
         },
-        initFinished:false,
+        initFinished:{
+            visible:false,
+            default:false
+        },
     },
 
 
-    initByUnitManager:function(unitManager,cell,unitId){
+    initByUnitManager:function(unitManager,unitConfig){
+        var cell=unitConfig.cell;
+        var unitId=unitConfig.unitId;
+        var category=unitConfig.category;
         var cellManager=unitManager.cellManager;
         this.cellManager=cellManager;
         this.unitManager=unitManager;
         this.battleField=unitManager.battleField;
+        this.bulletManager=this.battleField.bulletManager;
         // set unit id
         this.unitId=unitId;
         // set logic point
@@ -36,17 +46,14 @@ cc.Class({
             x:positionAR.x,
             y:positionAR.y
         });
+        
+        this.getComponent("UnitCategory").initWithConfig(unitConfig);
+        
         // set finish flag
         this.initFinished=true;
+
     },
 
-    attr:function(key){
-        if(this.hasOwnProperty(key)){
-            return this[key];
-        }else{
-            return null;
-        }
-    },
     cellChangeHandler:function(oldCell,newCell){
         this.unitManager.unitChangeCell(this.node,oldCell,newCell);
     }

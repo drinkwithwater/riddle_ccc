@@ -3,25 +3,37 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        delBullet:cc.NodePool,
         bulletTemplate:cc.Prefab,
+        delBullet:{
+            type:cc.NodePool,
+            visible:false,
+            default:null
+        },
         
-        cellManager:null,
-        unitManager:null,
+        cellManager:{
+            visible:false,
+            default:null
+        },
+        unitManager:{
+            visible:false,
+            default:null
+        },
 
-        idCounter:0,
-        idToBullet:Object,
+        idCounter:1,
+        idToBullet:{
+            visible:false,
+            default:null
+        },
     },
 
-    // use this for initialization
-    onLoad: function () {
-        this.delBullet=new cc.NodePool();
-        this.idToBullet={}
-
-        riddleUtil.test.bulletManager=this;
+    onLoad:function(){
+        // do this in initByNode
     },
 
     initByNode:function(battleField){
+        this.delBullet=new cc.NodePool();
+        this.idToBullet={}
+
         this.cellManager=battleField.cellManager;
         this.unitManager=battleField.unitManager;
     },
@@ -29,7 +41,6 @@ cc.Class({
     skillCreateBullet:function(source,targetId){
         var bulletNode=cc.instantiate(this.bulletTemplate);
         var bulletId=this.idCounter++;
-        riddleUtil.test.bullet=bulletNode;
         bulletNode.getComponent("BulletBase").initByBulletManager(this,
                 source.getComponent("SlidePoint").point,bulletId,targetId);
         this.idToBullet[bulletId]=bulletNode;

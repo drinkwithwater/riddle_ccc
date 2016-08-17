@@ -2,8 +2,14 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        inputArray:[],
-        currentIndex:0,
+        inputArray:{
+            visible:false,
+            default:[],
+        },
+        currentIndex:{
+            visible:false,
+            default:0,
+        },
     },
 
     // use this for initialization

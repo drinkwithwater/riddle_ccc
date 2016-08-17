@@ -1,24 +1,19 @@
-var Base=cc.Class();
 var SkillBase=cc.Class({
     name:"SkillBase",
-    extends:Base,
     properties:{
         unit:null,
-        unitAttack:null,
-        bulletManager:null,
+        unitBase:null,
+        unitSkill:null,
     },
     ctor:function(){
-        this.unit=arguments[0];
-        this.unitAttack=this.unit.getComponent("UnitAttack");
-        this.bulletManager=this.unitAttack.bulletManager;
     },
-    standUpdate:function(dt){
-    },
-    moveUpdate:function(dt){
+    bind:function(unit){
+        this.unit=unit;
+        this.unitSkill=this.unit.getComponent("UnitSkill");
+        this.unitBase=this.unit.getComponent("UnitBase");
     },
     cast:function(){
         console.log("cast skill");
-        this.bulletManager.skillCreateBullet(this.unit,this.targetId)
     },
     update:function(dt){
     }
@@ -38,20 +33,28 @@ var HitSkill=cc.Class({
         startFlag:false,
         targetId:null,
     },
+    cast:function(){
+        this.unitBase.bulletManager.skillCreateBullet(this.unit,this.targetId)
+    },
+    bind:function(unit){
+        this._super.apply(this,arguments);
+        this.unitSkill.addListener("hit",this,this.onUnitHit);
+        this.unitSkill.addListener("update",this,this.onUnitUpdate);
+    },
     onUnitHit:function(targetId){
-        this.unitAttack.attackLock();
+        this.unitSkill.attackLock();
         this.preTime=0.5;
         this.startFlag=true;
         this.targetId=targetId;
     },
-    update:function(dt){
+    onUnitUpdate:function(dt){
         if(this.startFlag){
             if(this.preTime<=0){
                 this.cast();
                 this.startFlag=false;
                 this.preTime=0.5;
                 this.targetId=null;
-                this.unitAttack.attackUnlock();
+                this.unitSkill.attackUnlock();
             }else{
                 this.preTime-=dt;
             }
@@ -61,25 +64,42 @@ var HitSkill=cc.Class({
 var MoveSkill=cc.Class({
     extends:SkillBase,
     properties:{
-        beforeCoolTime:0,
-        afterCoolTime:0,
+        coolTime:0,
         state:hitState.BEFORE,
     },
-    moveUpdate:function(dt){
+    bind:function(){
+        this._super.apply(this,arguments);
+        this.unitSkill.addListener("startMove",this,this.onUnitStartMove);
+        this.unitSkill.addListener("updateMove",this,this.onUnitUpdateMove);
+    },
+    onUnitStartMove:function(){
+        this.coolTime=1;
+    },
+    onUnitMoveUpdate:function(dt){
         this.coolTime-=dt;
         if(this.coolTime<=0){
             this.cast();
             this.coolTime=1;
         }
-    }
+    },
 });
 var StandSkill=cc.Class({
     extends:SkillBase,
     properties:{
-        coolTime:0,
-        state:hitState.BEFORE,
+        coolTime:1,
     },
-    standUpdate:function(dt){
+    bind:function(){
+        this._super.apply(this,arguments);
+        this.unitSkill.addListener("startStand",this,this.onUnitStartStand);
+        this.unitSkill.addListener("updateStand",this,this.onUnitUpdateStand);
+    },
+    cast:function(){
+        console.log("cast stand skill");
+    },
+    onUnitStartStand:function(){
+        this.coolTime=1;
+    },
+    onUnitUpdateStand:function(dt){
         this.coolTime-=dt;
         if(this.coolTime<=0){
             this.cast();
@@ -87,7 +107,10 @@ var StandSkill=cc.Class({
         }
     },
 });
+const SkillCategory=require("SkillCategory");
 module.exports={
     SkillBase:SkillBase,
-    HitSkill:HitSkill
+    HitSkill:HitSkill,
+    StandSkill:StandSkill,
+    MoveSkill:MoveSkill
 }

@@ -1,5 +1,15 @@
 const _=require("underscore")
 var riddleUtil={
+    xyWrap:function(pos,y){
+        if(y){
+            return {
+                x:pos,
+                y:y
+            }
+        }else{
+            return pos;
+        }
+    },
     isObject:function(obj){
         var type=typeof obj;
         return type==='function'||type==='object'&&!!obj;
@@ -103,6 +113,7 @@ var riddleUtil={
             return bm.unitCreateBullet(unit,1);
         }
     },
+    _:_,
 }
 
 module.exports=riddleUtil;

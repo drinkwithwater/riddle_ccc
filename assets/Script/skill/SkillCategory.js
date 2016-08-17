@@ -1,8 +1,8 @@
-var skillCategory={
-    HIT_NORMAL:1,
-    STAND_NORMAL:2,
-    MOVE_NORMAL:3,
-    HURT_NORMAL:4,
+const Skill=require("Skill");
+var CategoryToClass={
+    HIT_NORMAL:Skill.HitSkill,
+    STAND_NORMAL:Skill.StandSkill,
+    MOVE_NORMAL:Skill.MoveSkill,
 }
 var skillAttr={
     HIT_NORMAL:{
@@ -20,3 +20,11 @@ var skillAttr={
     HURT_NORMAL:{
     }
 }
+module.exports={
+    CategoryToClass:CategoryToClass
+}
+cc.Enum({
+    HIT_NORMAL:1,
+    STAND_NORMAL:2,
+    MOVE_NORMAL:3,
+});

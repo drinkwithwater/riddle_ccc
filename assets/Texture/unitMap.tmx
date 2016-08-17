@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="left-down" width="10" height="10" tilewidth="50" tileheight="50" nextobjectid="10">
+ <tileset firstgid="1" name="allSprite" tilewidth="50" tileheight="50" tilecount="10" columns="5">
+  <image source="allSprite.png" width="250" height="100"/>
+  <tile id="0">
+   <properties>
+    <property name="category" value="SOLDIER"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="category" value="TOWER"/>
+   </properties>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="category" value="ARROW"/>
+   </properties>
+  </tile>
+  <tile id="3">
+   <properties>
+    <property name="category" value="SWORD"/>
+   </properties>
+  </tile>
+  <tile id="4">
+   <properties>
+    <property name="category" value="HORSE"/>
+   </properties>
+  </tile>
+  <tile id="5">
+   <properties>
+    <property name="category" value="KNIFE"/>
+   </properties>
+  </tile>
+  <tile id="6">
+   <properties>
+    <property name="category" value="STICK"/>
+   </properties>
+  </tile>
+  <tile id="7">
+   <properties>
+    <property name="category" value="BOW"/>
+   </properties>
+  </tile>
+  <tile id="8">
+   <properties>
+    <property name="category" value="AXE"/>
+   </properties>
+  </tile>
+  <tile id="9">
+   <properties>
+    <property name="category" value="WING"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="11" name="desktop" tilewidth="50" tileheight="50" tilecount="20" columns="5">
+  <image source="desktop.jpg" width="293" height="220"/>
+  <tile id="9">
+   <properties>
+    <property name="item" value="sth"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="cellItem" width="10" height="10">
+  <data encoding="csv">
+17,17,17,17,17,20,17,17,17,17,
+17,17,17,17,17,20,17,17,17,17,
+17,17,17,17,17,20,17,17,17,17,
+17,17,17,17,17,20,17,17,17,17,
+20,20,20,20,17,17,17,17,17,17,
+17,17,17,17,17,17,20,20,20,20,
+17,17,17,17,20,17,17,17,17,17,
+17,17,17,17,20,17,17,17,17,17,
+17,17,17,17,20,17,17,17,17,17,
+17,17,17,17,20,17,17,17,17,17
+</data>
+ </layer>
+ <layer name="unitConfig" width="10" height="10">
+  <data encoding="csv">
+7,0,0,0,0,0,0,0,0,8,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,1,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,2,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+3,0,0,0,0,0,0,0,5,6
+</data>
+ </layer>
+</map>

@@ -3,30 +3,36 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        mapTiled:{
-            type:cc.TiledMap,
-            default:null,
+        tiledLayerName:"cellItem",
+        tiledMapAdapter:{
+            visible:false,
+            get:function(){
+                return this.getComponent("TiledMapAdapter");
+            }
         },
         cellRange:{
-            default:cc.p(10,10),
+            visible:false,
+            get:function(){
+                return this.tiledMapAdapter.tileRange;
+            }
         },
+        // on cell's width and height for logic point
         cellSize:{
             default:cc.p(10,10),
         },
         // UnitManager
-        unitManager:null,
+        unitManager:{
+            visible:false,
+            default:null
+        },
     },
-
-    // use this for initialization
-    onLoad: function () {
+    
+    onLoad:function(){
+        // do this in initByNode
     },
 
     // called by BattleFieldComponent
     initByNode:function(battleField){
-        var mapTiled=this.node.getComponent("cc.TiledMap");
-        // set cellRange
-        var mapRange=mapTiled.getMapSize();
-        this.cellRange=cc.p(mapRange.width,mapRange.height);
         this.unitManager=battleField.unitManager;
     },
 
@@ -36,7 +42,10 @@ cc.Class({
         if(cell.x<0||cell.x>=cellRange.x) return false;
         if(cell.y<0||cell.y>=cellRange.y) return false;
         
-        // TODO, check cell in tiled
+        // check cell in tiled map
+        var item=this.getItemAt(cell);
+        if(item) return false;
+        // check cell in unit
         var unit=this.unitManager.unit$(cell);
         if(_.isObject(unit)){
             return false;
@@ -45,6 +54,18 @@ cc.Class({
         }
     },
 
+    /**************************
+    * cell detail information *
+    **************************/
+    getItemAt:function(cell){
+        var properties=this.tiledMapAdapter.getLayerPropertiesAt(this.tiledLayerName,cell);
+        if(_.isObject(properties)){
+            if(_.has(properties,"item")){
+                return properties.item;
+            }
+        }
+        return null;
+    },
 
 
     /************************
@@ -67,30 +88,30 @@ cc.Class({
     },
 
     cellToPositionAR:function(cell){
-        var tileSize=this.mapTiled.getTileSize();
+        var tileSize=this.tiledMapAdapter.tileSize;
         var offset=this.centerPositionAR();
-        return cc.p((cell.x+0.5)*tileSize.width-offset.x,(cell.y+0.5)*tileSize.height-offset.y);
+        return cc.p((cell.x+0.5)*tileSize.x-offset.x,(cell.y+0.5)*tileSize.y-offset.y);
     },
     cellToPosition:function(){
         // not do
     },
     positionToCell:function(position){
-        var tileSize=this.mapTiled.getTileSize();
-        var cell=cc.p(Math.floor(position.x/tileSize.width),Math.floor(position.y/tileSize.height));
+        var tileSize=this.tiledMapAdapter.tileSize;
+        var cell=cc.p(Math.floor(position.x/tileSize.x),Math.floor(position.y/tileSize.y));
         return cell;
     },
 
     positionToPoint:function(){
     },
     pointToPositionAR:function(point){
-        var tileSize=this.mapTiled.getTileSize();
+        var tileSize=this.tiledMapAdapter.tileSize;
         var cellSize=this.cellSize;
 
         var offset=this.centerPositionAR();
 
         return cc.p(
-                point.x*tileSize.width/cellSize.x-offset.x,
-                point.y*tileSize.height/cellSize.y-offset.y);
+                point.x*tileSize.x/cellSize.x-offset.x,
+                point.y*tileSize.y/cellSize.y-offset.y);
     },
     centerPositionAR:function(){
         var mapSize=this.node.getContentSize();
@@ -101,12 +122,5 @@ cc.Class({
             x:dx,
             y:dy
         };
-    }
-
-
-
-    // called every frame, uncomment this function to activate update callback
-    // update: function (dt) {
-
-    // },
+    },
 });

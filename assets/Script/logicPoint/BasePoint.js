@@ -5,24 +5,27 @@ cc.Class({
 
     properties: {
         cell:{
+            visible:false,
             default:cc.p(0,0),
         },
         point:{
+            visible:false,
             default:cc.p(0,0),
         },
         cellManager:{
             type:CellManager,
+            visible:false,
             default:null
         }
     },
 
     // abstract, to be implemented
     initByNode:function(ownerNode,cell,point){
-        console.log("error:getCellManager is not implemented");
+        console.log("error:initByNode is not implemented");
     },
 
     changeCell:function(oldCell,newCell){
-        console.log("error:getCellManager is not implemented");
+        console.log("error:changeCell is not implemented");
     },
 
     // update node position by point

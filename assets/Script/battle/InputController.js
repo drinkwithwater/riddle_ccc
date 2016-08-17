@@ -6,33 +6,41 @@ const InputType=require("UserInput").InputType;
 const _=require("underscore");
 const COLOR_CHOOSE=cc.color(111,111,0);
 const COLOR_IDLE=cc.color(255,255,255);
-var OperContext=function(ctrl){
-    this.startFlag=false;
-    this.ctrl=ctrl;
-    this.unit=null;
-    this.start=function(unit){
+var OperContext=cc.Class({
+    name:"OperContext",
+    properties:{
+        startFlag:false,
+        ctrl:null,
+        unit:null,
+    },
+    ctor:function(){
+        this.ctrl=arguments[0];
+        this.startFlag=false;
+        this.unit=null;
+    },
+    start:function(unit){
         this.startFlag=true;
         this.unit=unit;
-    }
-    this.oper=function(input){
+    },
+    oper:function(input){
         this.unit.getComponent("UserInputList").add(input);
-    }
-    this.onCtrlCancel=function(){
+    },
+    onCtrlCancel:function(){
         if(_.isObject(this.unit)){
             this.unit.getComponent("UnitMove").cancelOper();
         }
         this.startFlag=false;
         this.unit=null;
-    }
-    this.onUnitCancel=function(){
+    },
+    onUnitCancel:function(){
         this.ctrl.cancelOper();
         this.startFlag=false;
         this.unit=null;
-    }
-    this.idSame=function(unitId){
+    },
+    idSame:function(unitId){
         return this.unit.getComponent("UnitBase").unitId==unitId;
     }
-}
+});
 cc.Class({
     extends: cc.Component,
 

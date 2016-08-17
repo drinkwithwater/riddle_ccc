@@ -1,7 +1,7 @@
 const UserInputList=require("UserInputList");
 const InputObject=require("UserInput").InputObject;
 const InputType=require("UserInput").InputType;
-const UnitAttack=require("UnitAttack");
+const UnitSkill=require("UnitSkill");
 const SlidePoint=require("SlidePoint");
 const UnitAttributes=require("UnitAttributes");
 const CellManager=require("CellManager");
@@ -14,43 +14,76 @@ cc.Class({
 
     properties: {
         userInputList:{
-            type:UserInputList,
-            default:null,
+            visible:false,
+            get:function(){
+                return this.getComponent("UserInputList");
+            }
         },
-        unitAttack:{
-            type:UnitAttack,
-            default:null,
+        unitSkill:{
+            visible:false,
+            get:function(){
+                return this.getComponent("UnitSkill");
+            }
         },
-        /*
-        moveDirect:{
-            type:cc.Vec2,
-            default:null,
-        },*/
         slidePoint:{
-            type:SlidePoint,
-            default:null,
+            visible:false,
+            get:function(){
+                return this.getComponent("SlidePoint");
+            }
         },
         unitAttr:{
-            type:UnitAttributes,
-            default:null,
+            visible:false,
+            get:function(){
+                return this.getComponent("UnitAttributes");
+            }
         },
-        moveFlag:false,
+        
+        _moveFlag:{
+            visible:false,
+            default:false,
+        },
+        moveFlag:{
+            visible:false,
+            get:function(){
+                return this._moveFlag;
+            },
+            set:function(flag){
+                if(this._moveFlag==flag){
+                    return ;
+                }else{
+                    if(this._moveFlag){
+                        this.startStand();
+                    }else{
+                        this.startMove();
+                    }
+                    this._moveFlag=flag;
+                }
+            }
+        },
         //
         unitBase:{
-            type:UnitBase,
+            visible:false,
+            get:function(){
+                return this.getComponent("UnitBase");
+            }
+        },
+        oper:{
+            visible:false,
             default:null,
         },
-        oper:null,
     },
 
     // use this for initialization
     onLoad: function () {
-        this.userInputList=this.getComponent("UserInputList");
         this.userInputList.clear();
-        this.unitAttack=this.getComponent("UnitAttack");
-        this.slidePoint=this.getComponent("SlidePoint");
-        this.unitBase=this.getComponent("UnitBase");
-        this.unitAttr=this.getComponent("UnitAttributes");
+    },
+    startMove:function(){
+        console.log("start move");
+        this.unitSkill.unitStartMove();
+    },
+    startStand:function(){
+        console.log("start stand");
+        this.unitSkill.unitStartStand();
     },
 
     onStartOper:function(operContext){
@@ -76,10 +109,16 @@ cc.Class({
         var offset=dt*this.unitAttr.getSpeed();
         var thisPoint=this.slidePoint;
         thisPoint.moveSelfCell(thisPoint.cell,offset);
+        if(thisPoint.canStand()){
+            this.moveFlag=false;
+        }else{
+            this.moveFlag=true;
+        }
         this.slidePoint.updatePosition();
     },
     // private
     updateMove:function(curInput,nextInput,dt){
+        this.moveFlag=true;
         var thisPoint=this.slidePoint;
         var cellDistance=thisPoint.cellFarFrom(curInput.cell);
         var offset=dt*this.unitAttr.getSpeed();
@@ -122,8 +161,8 @@ cc.Class({
     },
     // private
     updateOper:function(curInput,nextInput,dt){
-        if(this.slidePoint.isStanding()){
-            this.unitAttack.hitAttack(curInput);
+        if(this.slidePoint.canStand()){
+            this.unitSkill.unitHit(curInput);
             this.userInputList.shift();
         }else{
             this.updateStand(dt);
@@ -135,7 +174,7 @@ cc.Class({
         if(!this.unitBase.initFinished){
             return ;
         }
-        if(!this.unitAttack.canMove()){
+        if(!this.unitSkill.canMove()){
             // when the unit is attacking, it can not move;
             return ;
         }else if(this.userInputList.isFinished()){

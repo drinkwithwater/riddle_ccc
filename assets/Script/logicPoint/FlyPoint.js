@@ -2,7 +2,10 @@ const BasePoint=require("BasePoint");
 cc.Class({
     extends: BasePoint,
     properties: {
-        nodeBase:null,
+        nodeBase:{
+            visible:false,
+            default:null,
+        },
     },
 
     initByNode:function(nodeBase,point){

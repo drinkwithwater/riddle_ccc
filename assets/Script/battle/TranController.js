@@ -7,29 +7,36 @@ cc.Class({
     properties: {
         battleField:{
             type:BattleFieldComponent,
+            visible:false,
             default:null,
         },
-        map:{
+        innerNode:{
             type:cc.Node,
             default:null,
         },
         lastLoction1:{
+            visible:false,
             default:cc.p(0,0)
         },
         lastLocation2:{
-            default:cc.p(0,0)
+            visible:false,
+            default:cc.p(0,0),
         },
         // for mouse's right button
-        rightDown:false,
+        rightDown:{
+            visible:false,
+            default:false,
+        },
         // is doing transform
-        doTran:false,
+        doTran:{
+            visible:false,
+            default:false,
+        },
     },
 
     // use this for initialization
     onLoad: function () {
-        //this.battleField=this.node.getComponent("BattleFieldComponent");
-        riddleUtil.test.battleNode=this.node;
-        riddleUtil.test.map=this.map;
+        this.battleField=this.getComponent("BattleFieldComponent")
         this.bindMouseListener();
     },
 
@@ -72,10 +79,10 @@ cc.Class({
         }else{
         }
     },
+    
     /***********************
     *** tran api ****
     ***********************/
-
     // transform (x,y)->(x+dx,y+dy)
     moveTran:function(dx,dy){
         var battleNode=this.node;
@@ -104,6 +111,7 @@ cc.Class({
     /***********************
     *** tran listener ****
     ***********************/
+    /*
     createMobileListener:function(){
         // todo
         var thisVar=this;
@@ -139,7 +147,8 @@ cc.Class({
             },
         });
         return listener;
-    },
+    },*/
+    /*
     createMouseListener:function(){
         var thisVar=this;
         var listener=cc.EventListener.create({
@@ -155,10 +164,10 @@ cc.Class({
             }
         });
         return listener;
-    },
+    }, */
     bindMouseListener:function(){
         var tran=this;
-        this.map.on(cc.Node.EventType.MOUSE_DOWN,function(event){
+        this.innerNode.on(cc.Node.EventType.MOUSE_DOWN,function(event){
             if(event.getButton()==cc.Event.EventMouse.BUTTON_RIGHT){
                 tran.rightDown=true;
                 tran.beginTran({
@@ -167,7 +176,7 @@ cc.Class({
                 });
             }
         });
-        this.map.on(cc.Node.EventType.MOUSE_MOVE,function(event){
+        this.innerNode.on(cc.Node.EventType.MOUSE_MOVE,function(event){
             if(tran.rightDown){
                 tran.tran({
                     x:event.getLocationX(),
@@ -178,7 +187,7 @@ cc.Class({
                 return false;
             }
         });
-        this.map.on(cc.Node.EventType.MOUSE_UP,function(event){
+        this.innerNode.on(cc.Node.EventType.MOUSE_UP,function(event){
             if(event.getButton()==cc.Event.EventMouse.BUTTON_RIGHT){
                 tran.rightDown=false;
                 tran.tran({
@@ -190,7 +199,7 @@ cc.Class({
                 return false;
             }
         });
-        this.map.on(cc.Node.EventType.MOUSE_WHEEL,function(event){
+        this.innerNode.on(cc.Node.EventType.MOUSE_WHEEL,function(event){
             var scroll=event.getScrollY();
             var point=event.getLocation();
             var point=tran.node.convertToNodeSpaceAR(point);

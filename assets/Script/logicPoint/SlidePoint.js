@@ -7,8 +7,14 @@ cc.Class({
     extends: BasePoint,
 
     properties: {
-        slideState:0,
-        nodeBase:null,
+        slideState:{
+            visible:false,
+            default:0,
+        },
+        nodeBase:{
+            visible:false,
+            default:null,
+        },
     },
 
 
@@ -96,13 +102,16 @@ cc.Class({
         this.updateCell();
     },
 
-    isStanding:function(){
+    // because the x,y of point are both in the slide line so it can stand
+    canStand:function(){
+        return this.slideState==SLIDE_STATE_ALL;
+        /*
         var centerPoint=this.cellManager.cellToPoint(this.cell);
         if(0==this.pointFarFrom(centerPoint)){
             return true;
         }else{
             return false;
-        }
+        }*/
     }
 
 });
