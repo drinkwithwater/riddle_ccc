@@ -46,6 +46,8 @@ cc.Class({
             x:positionAR.x,
             y:positionAR.y
         });
+
+        this.getComponent("UnitInter").team=unitConfig.team;
         
         this.getComponent("UnitCategory").initWithConfig(unitConfig);
         

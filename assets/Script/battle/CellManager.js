@@ -12,9 +12,7 @@ cc.Class({
         },
         cellRange:{
             visible:false,
-            get:function(){
-                return this.tiledMapAdapter.tileRange;
-            }
+            default:cc.p(0,0),
         },
         // on cell's width and height for logic point
         cellSize:{
@@ -34,6 +32,7 @@ cc.Class({
     // called by BattleFieldComponent
     initByNode:function(battleField){
         this.unitManager=battleField.unitManager;
+        this.cellRange=this.tiledMapAdapter.tileRange;
     },
 
     canMove:function(cell){

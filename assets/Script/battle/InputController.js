@@ -100,14 +100,14 @@ cc.Class({
         
         var unit=this.unitManager.unit$(cell);
         if(_.isObject(unit)){
-            var unitId=unit.getComponent("UnitBase").unitId;
-            if(this.oper.idSame(unitId)){
+            var unitInter=unit.getComponent("UnitInter");
+            if(this.oper.idSame(unitInter.getUnitId())){
                 // over oper unit
                 var input=new InputObject(InputType.MOVE,cell);
                 this.oper.oper(input);
             }else{
                 // over a unit
-                var input=new InputObject(InputType.OPER,cell,unitId);
+                var input=new InputObject(InputType.OPER,cell,unitInter);
                 this.oper.oper(input);
             }
         }else if(this.cellManager.canMove(cell)){

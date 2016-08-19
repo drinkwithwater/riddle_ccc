@@ -7,6 +7,10 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
+        tiledMap:{
+            type:cc.TiledMap,
+            default:null,
+        },
         cellManager:{
             type:CellManager,
             default:null,
@@ -29,9 +33,20 @@ cc.Class({
         },
     },
 
+    loadMapByUrl:function(url){
+        var self=this;
+        console.log(url);
+        cc.loader.loadRes(url,cc.TiledMapAsset,function(err,tmxAsset){
+            if(err){
+                console.log(err);
+            }
+            self.tiledMap.tmxAsset=tmxAsset;
+            self.loadMap();
+        });
+    },
     // use this for initialization
     onLoad: function () {
-        this.loadMap()
+        //this.loadMap()
     },
     
     riddleTestBind:function(){

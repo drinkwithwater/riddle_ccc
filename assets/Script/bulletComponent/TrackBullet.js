@@ -11,18 +11,14 @@ cc.Class({
     },
     
 
-    initByBulletManager:function(bulletManager,point,bulletId,targetId){
+    initByBulletManager:function(bulletManager,point,bulletId,targetInter){
         this._super.apply(this,arguments);
     },
 
     update: function (dt) {
-        var target=this.unitManager.unit$(this.targetId);
-        if(!_.isObject(target)){
-            return ;
-        }else{
-            this.flyPoint.moveDstPoint(target.getComponent("SlidePoint").point,this.speed*dt);
-            this.flyPoint.updatePosition();
-        }
+        var targetInter=this.targetInter;
+        this.flyPoint.moveDstPoint(targetInter.getPoint(),this.speed*dt);
+        this.flyPoint.updatePosition();
     },
 
 });

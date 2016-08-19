@@ -113,6 +113,31 @@ var riddleUtil={
             return bm.unitCreateBullet(unit,1);
         }
     },
+    radioRange:function(center,range){
+        if(range<=0) return [{x:center.x,y:center.y}];
+        var rangeArray=[];
+        // x=0;
+        for(var y=-range;y<=range;y++){
+            rangeArray.push({
+                x:center.x,
+                y:center.y+y
+            });
+        }
+        // x:[1,range]+[-range,-1]
+        for(var x=1;x<=range;x++){
+            for(var y=-(range-x);y<=range-x;y++){
+                rangeArray.push({
+                    x:center.x+x,
+                    y:center.y+y
+                });
+                rangeArray.push({
+                    x:center.x-x,
+                    y:center.y+y
+                });
+            }
+        }
+        return rangeArray;
+    },
     _:_,
 }
 

@@ -2,6 +2,7 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
+        observeRange:1,
         speed:50,
         _maxHp:{
             visible:false,

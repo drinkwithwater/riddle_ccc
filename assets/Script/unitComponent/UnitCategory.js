@@ -1,4 +1,4 @@
-const SkillCategory=require("SkillCategory");
+const skillCategory=require("skillCategory");
 var Category=cc.Enum({
     SOLDIER:1,
     TOWER:2,
@@ -16,37 +16,50 @@ var CategoryToStatic={
         hp:2,
         ap:1,
         speed:10,
-        skill:["HIT_NORMAL"],
+        bulletSpeed:10,
+        skills:["HIT"],
     },
     TOWER:{
         hp:2,
         ap:1,
         speed:10,
-        skill:["STAND_NORMAL"],
+        bulletSpeed:10,
+        skills:["STAND"],
     },
     ARROW:{
         hp:2,
         ap:1,
         speed:10,
-        skill:["STAND_NORMAL"],
+        bulletSpeed:10,
+        skills:[],
     },
     SWORD:{
         hp:2,
         ap:1,
         speed:10,
-        skill:["STAND_NORMAL"],
+        bulletSpeed:10,
+        skills:[],
     },
     HORSE:{
         hp:2,
         ap:1,
         speed:10,
-        skill:["STAND_NORMAL"],
+        bulletSpeed:10,
+        skills:[],
     },
+    BOW:{
+        hp:2,
+        ap:1,
+        speed:10,
+        bulletSpeed:10,
+        skills:["SHOT"],
+    },
+    /*
     KNIFE:6,
     STICK:7,
     BOW:8,
     AXE:9,
-    WING:10,
+    WING:10,*/
 }
 // url in resources/*, type: cc.SpriteFrame
 var CategoryToUrl={
@@ -86,5 +99,20 @@ cc.Class({
                 sprite.spriteFrame=spriteFrame;
             });
         }
+        var staticAttr=CategoryToStatic[category];
+        // init skill
+        if(staticAttr){
+            this.skillInit(staticAttr.skills);
+        }
     },
+    skillInit:function(skills){
+        var unitSkill=this.getComponent("UnitSkill");
+        for(var i=0,l=skills.length;i<l;i++){
+            var skillName=skills[i];
+            var SkillClass=skillCategory.CategoryToClass[skillName];
+            unitSkill.addSkill(new SkillClass());
+        }
+    },
+    update:function(dt){
+    }
 });

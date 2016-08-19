@@ -1,0 +1,55 @@
+var SkillBase=require("Skill").SkillBase;
+var StandSkill=cc.Class({
+    extends:SkillBase,
+    properties:{
+        coolTime:1,
+    },
+    bind:function(){
+        this._super.apply(this,arguments);
+        this.unitSkill.addListener("startStand",this,this.onUnitStartStand);
+        this.unitSkill.addListener("updateStand",this,this.onUnitUpdateStand);
+        this.unitSkill.addListener("observe",this,this.onUnitObserveTargets);
+    },
+    cast:function(target){
+        console.log("cast stand skill");
+    },
+    onUnitObserveTargets:function(targets){
+        console.log(targets);
+    },
+    onUnitStartStand:function(){
+        this.coolTime=1;
+    },
+    onUnitUpdateStand:function(dt){
+        this.coolTime-=dt;
+        if(this.coolTime<=0){
+            this.cast();
+            this.coolTime=1;
+        }
+    },
+});
+var ObserverStandSkill=cc.Class({
+    extends:SkillBase,
+    properties:{
+        coolTime:1,
+    },
+    bind:function(){
+        this._super.apply(this,arguments);
+        this.unitSkill.addListener("startStand",this,this.onUnitStartStand);
+        this.unitSkill.addListener("updateStand",this,this.onUnitUpdateStand);
+    },
+    cast:function(target){
+    },
+    onUnitStartStand:function(){
+        this.coolTime=1;
+    },
+    onUnitUpdateStand:function(dt){
+        this.coolTime-=dt;
+        if(this.coolTime<=0){
+            this.cast();
+            this.coolTime=1;
+        }
+    },
+});
+module.exports={
+    StandSkill:StandSkill
+}

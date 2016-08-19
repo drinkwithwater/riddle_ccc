@@ -84,6 +84,7 @@ cc.Class({
                 }
             }
         }
+        this.unitConfigManager.hideConfigLayer();
     },
     createUnit:function(unitConfig){
         var cell=unitConfig.cell;
@@ -110,7 +111,10 @@ cc.Class({
         this.cellToUnit[oldCell.x][oldCell.y]=undefined;
         this.cellToUnit[newCell.x][newCell.y]=unit;
     },
-
+    
+    /******************
+    ** unit selector **
+    ******************/
     unit$:function(a,b){
         if(arguments.length==1){
             if(_.isString(a)||_.isNumber(a)){
@@ -129,6 +133,12 @@ cc.Class({
             }
         }else{
             return null;
+        }
+    },
+    unitInter$:function(a,b){
+        var unitNode=this.unit$.apply(this,arguments);
+        if(unitNode){
+            return unitNode.getComponent("UnitInter");
         }
     },
 });

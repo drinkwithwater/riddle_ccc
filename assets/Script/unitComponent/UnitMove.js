@@ -8,7 +8,7 @@ const CellManager=require("CellManager");
 const UnitBase=require("UnitBase")
 const riddleUtil=require("riddleUtil");
 const _=require("underscore");
-const FIX_RANGE=5;
+const FIX_RANGE=2;
 cc.Class({
     extends: cc.Component,
 
@@ -146,8 +146,8 @@ cc.Class({
             var path=riddleUtil.shortestPath(thisPoint.cell,curInput.cell,function(cell){
                 return cellManager.canMove(cell);
             });
-            // TO DISCUSS
-            if(path.length>=2 && path.length<=FIX_RANGE){
+            // TO DISCUSS, the path include first node...
+            if(path.length>=2 && path.length<=FIX_RANGE+1){
                 thisPoint.moveNearCell(path[1],offset);
             }else{
                 this.updateCancel(dt);

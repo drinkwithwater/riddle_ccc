@@ -1,5 +1,7 @@
 const Skill=require("Skill");
 const SkillBase=Skill.SkillBase;
+const riddleUtil=require("riddleUtil");
+const _=require("underscore");
 var Listener=cc.Class({
     name:"Listener",
     properties:{
@@ -15,6 +17,8 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
+        timeSum:0,
+        skillUpdateTimeSlice:0.1,
         attackFlag:{
             visible:false,
             default:false,
@@ -23,6 +27,12 @@ cc.Class({
             visible:false,
             get:function(){
                 return this.getComponent("UnitBase");
+            }
+        },
+        unitManager:{
+            visible:false,
+            get:function(){
+                return this.getComponent("UnitBase").unitManager;
             }
         },
         unitMove:{
@@ -82,19 +92,31 @@ cc.Class({
             default:[]
         },
         
+        observeListeners:{
+            type:[Listener],
+            visible:false,
+            default:[]
+        },
+        
         skillList:{
             type:[SkillBase],
             default:[]
         },
-        
+
+        // hatred list 
+        targetList:{
+            visible:false,
+            default:[]
+        }
     },
 
     // use this for initialization
     onLoad: function () {
         
         
+        /*
         var hitSkill=new Skill.HitSkill();
-        this.addSkill(hitSkill);
+        this.addSkill(hitSkill);*/
 
         /*
         var standSkill=new Skill.StandSkill();
@@ -144,8 +166,7 @@ cc.Class({
 
     
     unitHit:function(operInput){
-        var target=this.unitBase.unitManager.unit$(operInput.targetId);
-        this.triggerListener("hit",operInput.targetId);
+        this.triggerListener("hit",operInput.targetInter);
     },
     unitStartMove:function(){
         this.triggerListener("startMove");
@@ -155,20 +176,59 @@ cc.Class({
     },
 
     update: function (dt) {
+        this.timeSum+=dt;
+        if(this.timeSum>=this.skillUpdateTimeSlice){
+            this.skillUpdate(this.timeSum);
+            this.timeSum-=this.skillUpdateTimeSlice;
+        }
+        
+    },
+    observe:function(){
+        var thisCell=this.slidePoint.cell;
+        var range=this.getComponent("UnitAttributes").observeRange;
+        var observeCells=riddleUtil.radioRange(thisCell,range);
+        var newTargetDict={};
+        for(var i=0,l=observeCells.length;i<l;i++){
+            var cell=observeCells[i];
+            var unitInter=this.unitManager.unitInter$(cell);
+            if(unitInter){
+                if(unitInter.unitId==this.unitBase.unitId){
+                    // same unit
+                    continue;
+                }else{
+                    newTargetDict[unitInter.unitId]=unitInter;
+                }
+            }
+        }
+        // make the old targets be the first in list
+        var targetList=this.targetList.filter(function(unitInter){
+            var contain=newTargetDict.hasOwnProperty(unitInter.unitId);
+            if(contain) {
+                delete newTargetDict[unitInter.unitId];
+                return true;
+            }else{
+                return false;
+            }
+        });
+        for(var nid in newTargetDict){
+            var unitInter=newTargetDict[nid];
+            targetList.push(unitInter);
+        }
+        // set back to self's list;
+        this.targetList=targetList;
+        
+        if(this.targetList.length>0){
+            this.triggerListener("observe",this.targetList);
+        }
+    },
+    skillUpdate:function(dt){
         this.triggerListener("update",dt);
         if(this.unitMove.isMoving()){
             this.triggerListener("updateMove",dt);
         }else{
             this.triggerListener("updateStand",dt);
         }
-        
-        /*
-        if(this.slidePoint.isStanding()){
-            this.standSkill.standUpdate(dt);
-            this.moveSkill.standUpdate(dt);
-        }else{
-            this.moveSkill.moveUpdate(dt);
-        }*/
-    },
+        this.observe();
+    }
 
 });

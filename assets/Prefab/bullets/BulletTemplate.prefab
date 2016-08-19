@@ -123,9 +123,9 @@
     },
     "_enabled": true,
     "bulletId": 0,
-    "flyPoint": null,
     "targetId": -1,
     "unitManager": null,
+    "cellManager": null,
     "speed": 100
   },
   {
@@ -136,6 +136,6 @@
     "asset": {
       "__uuid__": "1a172af3-07d1-4dc9-b9d8-dd7abbe69677"
     },
-    "fileId": "9fe442oGK5KEJuZZzP4OkrJ"
+    "fileId": "874f0HISwtBrKtAC9wbJi/m"
   }
 ]

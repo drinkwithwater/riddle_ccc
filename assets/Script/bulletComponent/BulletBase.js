@@ -7,9 +7,14 @@ cc.Class({
 
     properties: {
         bulletId:-1,
-        targetId:-1,
+        targetInter:null,
 
-        flyPoint:FlyPoint,
+        flyPoint:{
+            visible:false,
+            get:function(){
+                return this.getComponent("FlyPoint");
+            }
+        },
 
         unitManager:UnitManager,
         cellManager:CellManager,
@@ -18,25 +23,20 @@ cc.Class({
     },
     
 
-    initByBulletManager:function(bulletManager,point,bulletId,targetId){
-        this.flyPoint=this.getComponent("FlyPoint");
+    initByBulletManager:function(bulletManager,point,bulletId,targetInter){
         
         this.cellManager=bulletManager.cellManager;
         this.unitManager=bulletManager.unitManager;
         
         this.bulletId=bulletId;
-        this.targetId=targetId;
+        this.targetInter=targetInter;
         this.flyPoint.initByNode(this,point);
     },
 
     update: function (dt) {
-        var target=this.unitManager.unit$(this.targetId);
-        if(!_.isObject(target)){
-            return ;
-        }else{
-            this.flyPoint.moveDstPoint(target.getComponent("SlidePoint").point,this.speed*dt);
-            this.flyPoint.updatePosition();
-        }
+        var targetInter=this.targetInter;
+        this.flyPoint.moveDstPoint(targetInter.getPoint(),this.speed*dt);
+        this.flyPoint.updatePosition();
     },
 
 });

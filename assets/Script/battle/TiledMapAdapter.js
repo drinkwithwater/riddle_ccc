@@ -32,5 +32,8 @@ cc.Class({
         var properties=this.tiledMap.getPropertiesForGID(gid);
         return properties;
     },
+    getLayerNode:function(tiledLayerName){
+        return this.node.getChildByName(tiledLayerName);
+    }
 
 });

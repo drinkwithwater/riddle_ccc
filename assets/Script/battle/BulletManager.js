@@ -4,6 +4,8 @@ cc.Class({
 
     properties: {
         bulletTemplate:cc.Prefab,
+        straightBulletTemplate:cc.Prefab,
+        trackBulletTemplate:cc.Prefab,
         delBullet:{
             type:cc.NodePool,
             visible:false,
@@ -38,11 +40,29 @@ cc.Class({
         this.unitManager=battleField.unitManager;
     },
 
-    skillCreateBullet:function(source,targetId){
+    skillCreateBullet:function(source,targetInter){
         var bulletNode=cc.instantiate(this.bulletTemplate);
         var bulletId=this.idCounter++;
         bulletNode.getComponent("BulletBase").initByBulletManager(this,
-                source.getComponent("SlidePoint").point,bulletId,targetId);
+                source.getComponent("SlidePoint").point,bulletId,targetInter);
+        this.idToBullet[bulletId]=bulletNode;
+        this.node.addChild(bulletNode,0,bulletId);
+        return bulletNode;
+    },
+    skillCreateTrackBullet:function(source,targetId){
+        var bulletNode=cc.instantiate(this.trackBulletTemplate);
+        var bulletId=this.idCounter++;
+        bulletNode.getComponent("TrackBullet").initByBulletManager(this,
+                source.getComponent("SlidePoint").point,bulletId,targetInter);
+        this.idToBullet[bulletId]=bulletNode;
+        this.node.addChild(bulletNode,0,bulletId);
+        return bulletNode;
+    },
+    skillCreateStraightBullet:function(source,targetInter){
+        var bulletNode=cc.instantiate(this.straightBulletTemplate);
+        var bulletId=this.idCounter++;
+        bulletNode.getComponent("StraightBullet").initByBulletManager(this,
+                source.getComponent("SlidePoint").point,bulletId,targetInter);
         this.idToBullet[bulletId]=bulletNode;
         this.node.addChild(bulletNode,0,bulletId);
         return bulletNode;

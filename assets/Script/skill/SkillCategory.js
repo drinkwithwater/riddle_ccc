@@ -1,30 +1,20 @@
 const Skill=require("Skill");
+const hitSkills=require("hitSkills");
+const moveSkills=require("moveSkills");
+const standSkills=require("standSkills");
 var CategoryToClass={
-    HIT_NORMAL:Skill.HitSkill,
-    STAND_NORMAL:Skill.StandSkill,
-    MOVE_NORMAL:Skill.MoveSkill,
+    HIT:hitSkills.HitSkill,
+    SHOT:hitSkills.ShotSkill,
+    STAND:standSkills.StandSkill,
+    MOVE:moveSkills.MoveSkill,
 }
-var skillAttr={
-    HIT_NORMAL:{
-        beforeCoolTime:1,
-        afterCoolTime:1
-    },
-    STAND_NORMAL:{
-        beforeCoolTime:1,
-        afterCoolTime:1
-    },
-    MOVE_NORMAL:{
-        beforeCoolTime:1,
-        afterCoolTime:1
-    },
-    HURT_NORMAL:{
-    }
-}
-module.exports={
-    CategoryToClass:CategoryToClass
-}
-cc.Enum({
-    HIT_NORMAL:1,
-    STAND_NORMAL:2,
-    MOVE_NORMAL:3,
+var Category=cc.Enum({
+    HIT:1,
+    SHOT:2,
+    STAND:3,
+    MOVE:4,
 });
+module.exports={
+    CategoryToClass:CategoryToClass,
+    Category:Category
+}

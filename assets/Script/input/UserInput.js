@@ -2,10 +2,10 @@ var InputType={
     MOVE:2,
     OPER:3,
 }
-var InputObject=function(type,cell,targetId){
+var InputObject=function(type,cell,targetInter){
     this.type=type;
     this.cell=cell;
-    this.targetId=targetId;
+    this.targetInter=targetInter;
 }
 module.exports={
     InputType:InputType,
