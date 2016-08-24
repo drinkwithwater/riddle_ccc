@@ -3,7 +3,7 @@ cc.Class({
 
     properties: {
         observeRange:1,
-        speed:50,
+        speed:25,
         _maxHp:{
             visible:false,
             default:2,
@@ -26,7 +26,6 @@ cc.Class({
         hp:{
             set:function(value){
                 this.hpLabel.string=String(value);
-                label.string=String(value);
                 this._hp=value;
             },
             get:function(){

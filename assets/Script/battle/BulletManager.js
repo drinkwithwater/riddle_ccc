@@ -20,6 +20,10 @@ cc.Class({
             visible:false,
             default:null
         },
+        drawLayer:{
+            visible:false,
+            default:null
+        },
 
         idCounter:1,
         idToBullet:{
@@ -33,11 +37,12 @@ cc.Class({
     },
 
     initByNode:function(battleField){
-        this.delBullet=new cc.NodePool();
+        //this.delBullet=new cc.NodePool();
         this.idToBullet={}
 
         this.cellManager=battleField.cellManager;
         this.unitManager=battleField.unitManager;
+        this.drawLayer=battleField.drawLayer;
     },
 
     skillCreateBullet:function(source,targetInter){
@@ -49,27 +54,32 @@ cc.Class({
         this.node.addChild(bulletNode,0,bulletId);
         return bulletNode;
     },
-    skillCreateTrackBullet:function(source,targetId){
+    skillCreateTrackBullet:function(bulletMiddle){
         var bulletNode=cc.instantiate(this.trackBulletTemplate);
         var bulletId=this.idCounter++;
-        bulletNode.getComponent("TrackBullet").initByBulletManager(this,
-                source.getComponent("SlidePoint").point,bulletId,targetInter);
+        bulletNode.getComponent("TrackBullet").initByBulletManager(this, bulletId, bulletMiddle);
         this.idToBullet[bulletId]=bulletNode;
         this.node.addChild(bulletNode,0,bulletId);
         return bulletNode;
     },
-    skillCreateStraightBullet:function(source,targetInter){
+    skillCreateStraightBullet:function(bulletMiddle){
         var bulletNode=cc.instantiate(this.straightBulletTemplate);
         var bulletId=this.idCounter++;
-        bulletNode.getComponent("StraightBullet").initByBulletManager(this,
-                source.getComponent("SlidePoint").point,bulletId,targetInter);
+        bulletNode.getComponent("StraightBullet").initByBulletManager(this, bulletId, bulletMiddle);
         this.idToBullet[bulletId]=bulletNode;
         this.node.addChild(bulletNode,0,bulletId);
         return bulletNode;
     },
-
-    // called every frame, uncomment this function to activate update callback
-    // update: function (dt) {
-
-    // },
+    skillAttackNoBullet:function(bulletMiddle){
+        var fromPoint=bulletMiddle.sourceInter.getPoint();
+        var toPoint=bulletMiddle.targetInter.getPoint();
+        this.drawLayer.animateAttack(fromPoint,toPoint);
+    },
+    removeBullet:function(bulletId){
+        // TODO use node pool to manager nodes
+        var bullet=this.idToBullet[bulletId]
+        delete this.idToBullet[bulletId];
+        bullet.removeFromParent();
+    }
+    
 });

@@ -28,8 +28,8 @@ cc.Class({
 
     moveDirect:function(direct,offset){
         var absxy=Math.abs(direct.x)+Math.abs(direct.y);
-        var dx=offset*direct.x/absxy;
-        var dy=offset*direct.y/absxy;
+        var dx=1.0*offset*direct.x/absxy;
+        var dy=1.0*offset*direct.y/absxy;
         this.point.x+=dx;
         this.point.y+=dy;
 

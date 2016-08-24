@@ -3,6 +3,7 @@ const CellManager=require("CellManager");
 const UnitManager=require("UnitManager");
 const BulletManager=require("BulletManager");
 const UnitConfigManager=require("UnitConfigManager");
+const DrawLayer=require("DrawLayer");
 cc.Class({
     extends: cc.Component,
 
@@ -27,6 +28,10 @@ cc.Class({
             type:BulletManager,
             default:null,
         },
+        drawLayer:{
+            type:DrawLayer,
+            default:null,
+        },
         timeSum:{
             visible:false,
             default:0
@@ -35,7 +40,6 @@ cc.Class({
 
     loadMapByUrl:function(url){
         var self=this;
-        console.log(url);
         cc.loader.loadRes(url,cc.TiledMapAsset,function(err,tmxAsset){
             if(err){
                 console.log(err);
@@ -56,6 +60,7 @@ cc.Class({
         riddleUtil.test.unitManager=this.unitManager;
         riddleUtil.test.bulletManager=this.bulletManager;
         riddleUtil.test.unitConfig=this.node.getChildByName("mapLayer").getComponent("UnitConfigManager");
+        riddleUtil.test.drawLayer=this.drawLayer;
     },
 
     loadMap:function(){
@@ -63,6 +68,7 @@ cc.Class({
         this.bulletManager.initByNode(this);
         this.unitConfigManager.initByNode(this);
         this.unitManager.initByNode(this);
+        this.drawLayer.initByNode(this);
         this.riddleTestBind();
     },
 

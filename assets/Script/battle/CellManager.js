@@ -15,9 +15,8 @@ cc.Class({
             default:cc.p(0,0),
         },
         // on cell's width and height for logic point
-        cellSize:{
-            default:cc.p(10,10),
-        },
+        cellSize:10,
+        tileSize:0,
         // UnitManager
         unitManager:{
             visible:false,
@@ -33,6 +32,7 @@ cc.Class({
     initByNode:function(battleField){
         this.unitManager=battleField.unitManager;
         this.cellRange=this.tiledMapAdapter.tileRange;
+        this.tileSize=this.tiledMapAdapter.tileSize.x;
     },
 
     canMove:function(cell){
@@ -73,14 +73,14 @@ cc.Class({
     //
     pointToCell:function(point){
         return cc.p(
-                Math.floor(point.x/this.cellSize.x),
-                Math.floor(point.y/this.cellSize.y));
+                Math.floor(point.x/this.cellSize),
+                Math.floor(point.y/this.cellSize));
     },
 
     // center point of the cell
     cellToPoint:function(cell){
-        var xCellSize=this.cellSize.x;
-        var yCellSize=this.cellSize.y;
+        var xCellSize=this.cellSize;
+        var yCellSize=this.cellSize;
         return cc.p(
                 (cell.x+0.5)*xCellSize,
                 (cell.y+0.5)*yCellSize);
@@ -109,8 +109,8 @@ cc.Class({
         var offset=this.centerPositionAR();
 
         return cc.p(
-                point.x*tileSize.x/cellSize.x-offset.x,
-                point.y*tileSize.y/cellSize.y-offset.y);
+                point.x*tileSize.x/cellSize-offset.x,
+                point.y*tileSize.y/cellSize-offset.y);
     },
     centerPositionAR:function(){
         var mapSize=this.node.getContentSize();

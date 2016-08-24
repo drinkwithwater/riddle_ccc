@@ -8,8 +8,12 @@ var HitSkill=cc.Class({
         startFlag:false,
         targetInter:null,
     },
-    cast:function(){
-        this.unitBase.bulletManager.skillCreateBullet(this.unit,this.targetInter)
+    cast:function(targetInter){
+        //console.log("cast",new Date().getMilliseconds());
+        this.unitInter.stealth=false;
+        var bulletMiddle=this.unitSkill.createBulletMiddle();
+        bulletMiddle.targetInter=targetInter;
+        this.unitBase.bulletManager.skillAttackNoBullet(bulletMiddle);
     },
     bind:function(unit){
         this._super.apply(this,arguments);
@@ -17,15 +21,20 @@ var HitSkill=cc.Class({
         this.unitSkill.addListener("update",this,this.onUnitUpdate);
     },
     onUnitHit:function(targetInter){
-        this.unitSkill.attackLock();
-        this.preTime=0.5;
-        this.startFlag=true;
-        this.targetInter=targetInter;
+        if(!this.startFlag){
+            //console.log("hit",new Date().getMilliseconds());
+            this.unitSkill.attackLock();
+            this.preTime=0.5;
+            this.startFlag=true;
+            this.targetInter=targetInter;
+        }else{
+            //console.log("empty hit");
+        }
     },
     onUnitUpdate:function(dt){
         if(this.startFlag){
             if(this.preTime<=0){
-                this.cast();
+                this.cast(this.targetInter);
                 this.startFlag=false;
                 this.preTime=0.5;
                 this.targetInter=null;
@@ -46,7 +55,7 @@ var ShotSkill=cc.Class({
         targetInter:null,
     },
     cast:function(){
-        this.unitBase.bulletManager.skillCreateStraightBullet(this.unit,this.targetInter)
+        //this.unitBase.bulletManager.skillCreateStraightBullet(this.unit,this.targetInter)
     },
     bind:function(unit){
         this._super.apply(this,arguments);
@@ -54,10 +63,14 @@ var ShotSkill=cc.Class({
         this.unitSkill.addListener("update",this,this.onUnitUpdate);
     },
     onUnitHit:function(targetInter){
-        this.unitSkill.attackLock();
-        this.preTime=0.5;
-        this.startFlag=true;
-        this.targetInter=targetInter;
+        if(this.startFlag){
+            return ;
+        }else{
+            this.unitSkill.attackLock();
+            this.preTime=0.5;
+            this.startFlag=true;
+            this.targetInter=targetInter;
+        }
     },
     onUnitUpdate:function(dt){
         if(this.startFlag){
@@ -73,7 +86,22 @@ var ShotSkill=cc.Class({
         }
     },
 });
+var StealthSkill=cc.Class({
+    extends:SkillBase,
+    properties:{
+    },
+    cast:function(){
+    },
+    bind:function(unit){
+        this._super.apply(this,arguments);
+        this.unitSkill.addListener("init",this,this.onUnitInit);
+    },
+    onUnitInit:function(){
+        this.unitInter.stealth=true;
+    },
+});
 module.exports={
     HitSkill:HitSkill,
-    ShotSkill:ShotSkill
+    ShotSkill:ShotSkill,
+    StealthSkill:StealthSkill
 }

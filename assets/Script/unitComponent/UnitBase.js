@@ -47,12 +47,14 @@ cc.Class({
             y:positionAR.y
         });
 
-        this.getComponent("UnitInter").team=unitConfig.team;
         
         this.getComponent("UnitCategory").initWithConfig(unitConfig);
+        this.getComponent("UnitInter").initWithConfig(unitConfig);
         
         // set finish flag
         this.initFinished=true;
+
+        this.getComponent("UnitSkill").unitInit();
 
     },
 

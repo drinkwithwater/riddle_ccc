@@ -11,6 +11,7 @@ var SkillBase=cc.Class({
         this.unit=unit;
         this.unitSkill=this.unit.getComponent("UnitSkill");
         this.unitBase=this.unit.getComponent("UnitBase");
+        this.unitInter=this.unit.getComponent("UnitInter");
     },
     cast:function(){
         console.log("cast skill");

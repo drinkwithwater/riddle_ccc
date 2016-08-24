@@ -18,7 +18,7 @@ cc.Class({
 
     properties: {
         timeSum:0,
-        skillUpdateTimeSlice:0.1,
+        updateTimeSlice:0.05,
         attackFlag:{
             visible:false,
             default:false,
@@ -27,6 +27,18 @@ cc.Class({
             visible:false,
             get:function(){
                 return this.getComponent("UnitBase");
+            }
+        },
+        unitInter:{
+            visible:false,
+            get:function(){
+                return this.getComponent("UnitInter");
+            }
+        },
+        cellManager:{
+            visible:false,
+            get:function(){
+                return this.getComponent("UnitBase").cellManager;
             }
         },
         unitManager:{
@@ -92,7 +104,12 @@ cc.Class({
             default:[]
         },
         
-        observeListeners:{
+        observeEnemiesListeners:{
+            type:[Listener],
+            visible:false,
+            default:[]
+        },
+        observeFriendsListeners:{
             type:[Listener],
             visible:false,
             default:[]
@@ -110,20 +127,6 @@ cc.Class({
         }
     },
 
-    // use this for initialization
-    onLoad: function () {
-        
-        
-        /*
-        var hitSkill=new Skill.HitSkill();
-        this.addSkill(hitSkill);*/
-
-        /*
-        var standSkill=new Skill.StandSkill();
-        this.addSkill(standSkill);*/
-        
-        this.triggerListener("init");
-    },
 
     addSkill:function(skill){
         this.skillList.push(skill);
@@ -145,8 +148,8 @@ cc.Class({
     
 
     // call by UnitMove
-    canMove:function(){
-        return !this.attackFlag;
+    isAttacking:function(){
+        return this.attackFlag;
     },
 
     // attack when CD end
@@ -165,6 +168,9 @@ cc.Class({
     },
 
     
+    unitInit:function(){
+        this.triggerListener("init");
+    },
     unitHit:function(operInput){
         this.triggerListener("hit",operInput.targetInter);
     },
@@ -177,9 +183,9 @@ cc.Class({
 
     update: function (dt) {
         this.timeSum+=dt;
-        if(this.timeSum>=this.skillUpdateTimeSlice){
-            this.skillUpdate(this.timeSum);
-            this.timeSum-=this.skillUpdateTimeSlice;
+        if(this.timeSum>=this.updateTimeSlice){
+            this.sliceUpdate(this.timeSum);
+            this.timeSum=0;
         }
         
     },
@@ -216,12 +222,29 @@ cc.Class({
         }
         // set back to self's list;
         this.targetList=targetList;
+
         
-        if(this.targetList.length>0){
-            this.triggerListener("observe",this.targetList);
+        var selfTeam=this.unitInter.team;
+        // observe enemy
+        var targetEnemies=targetList.filter(function(unitInter){
+            return unitInter.team!=selfTeam;
+        }).filter(function(unitInter){
+            return unitInter.canBeObserved();
+        });
+        if(targetEnemies.length>0){
+            this.triggerListener("observeEnemies",targetEnemies);
         }
+        
+        // filter friend
+        var targetFriends=targetList.filter(function(unitInter){
+            return unitInter.team==selfTeam;
+        });
+        if(targetFriends.length>0){
+            this.triggerListener("observeFriends",targetFriends);
+        }
+        
     },
-    skillUpdate:function(dt){
+    sliceUpdate:function(dt){
         this.triggerListener("update",dt);
         if(this.unitMove.isMoving()){
             this.triggerListener("updateMove",dt);
@@ -229,6 +252,16 @@ cc.Class({
             this.triggerListener("updateStand",dt);
         }
         this.observe();
-    }
+    },
+    createBulletMiddle:function(){
+        var attr=this.getComponent("UnitAttributes");
+        var distance=(0.5+attr.observeRange)*this.cellManager.cellSize;
+        return {
+            sourceInter:this.unitInter,
+            point:this.unitInter.getPoint(),
+            harm:attr.ap,
+            distance:distance,
+        };
+    },
 
 });

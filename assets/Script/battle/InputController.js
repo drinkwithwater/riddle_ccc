@@ -12,6 +12,7 @@ var OperContext=cc.Class({
         startFlag:false,
         ctrl:null,
         unit:null,
+        unitInter:null,
     },
     ctor:function(){
         this.ctrl=arguments[0];
@@ -21,6 +22,7 @@ var OperContext=cc.Class({
     start:function(unit){
         this.startFlag=true;
         this.unit=unit;
+        this.unitInter=unit.getComponent("UnitInter");
     },
     oper:function(input){
         this.unit.getComponent("UserInputList").add(input);
@@ -64,6 +66,9 @@ cc.Class({
             type:OperContext,
             default:null,
         },
+        stayTime:0,
+        staySlice:0.7,
+        stayFlag:false,
     },
 
     // use this for initialization
@@ -79,12 +84,15 @@ cc.Class({
         return this.oper.startFlag;
     },
     startCell:function(cell){
-        // Todo find unit
+        this.stayTime=0;
+        this.stayFlag=false;
         var startUnit=this.unitManager.unit$(cell);
         if(_.isObject(startUnit)){
-            this.oper.start(startUnit);
-            this.preCell=cell;
-            this.focusItem.color=COLOR_CHOOSE;
+            if(startUnit.getComponent("UnitInter").canOper()){
+                this.oper.start(startUnit);
+                this.preCell=cell;
+                this.focusItem.color=COLOR_CHOOSE;
+            }
         }
     },
     overCell:function(cell){
@@ -93,6 +101,9 @@ cc.Class({
         }
         if(cell.x==this.preCell.x&&cell.y==this.preCell.y){
             return ;
+        }else{
+            this.stayFlag=false;
+            this.stayTime=0;
         }
         console.log("over cell : ",cell.x,cell.y);
         
@@ -120,12 +131,33 @@ cc.Class({
             return ;
         }
     },
+    stayCell:function(){
+        var targetUnit=this.unitManager.unit$(this.preCell);
+        if(_.isObject(targetUnit)){
+            var targetInter=targetUnit.getComponent("UnitInter");
+            if(this.oper.idSame(targetInter.getUnitId())){
+                return ;
+            }else{
+                if(this.oper.unitInter.isMoving()){
+                    return ;
+                }else{
+                    // over a unit
+                    var input=new InputObject(InputType.OPER,this.preCell,targetInter);
+                    this.oper.oper(input);
+                }
+            }
+        }else{
+            return ;
+        }
+    },
     cancel:function(){
         this.oper.onCtrlCancel();
         this.cancelOper();
     },
     // call by oper
     cancelOper:function(){
+        this.stayTime=0;
+        this.stayFlag=false;
         this.preCell=cc.p(-1,-1);
         this.focusItem.color=COLOR_IDLE;
     },
@@ -173,5 +205,17 @@ cc.Class({
         var point=this.node.convertToNodeSpace(eventLocation);
         return this.cellManager.positionToCell(point);
     },
+    update:function(dt){
+        if(this.stayFlag){
+            this.stayTime+=dt;
+            if(this.stayTime>=this.staySlice){
+                this.stayCell();
+                this.stayTime=0;
+            }
+        }
+        if(this.isStart()){
+            this.stayFlag=true;
+        }
+    }
 
 });

@@ -1,3 +1,4 @@
+const _=require("underscore")
 const skillCategory=require("skillCategory");
 var Category=cc.Enum({
     SOLDIER:1,
@@ -15,51 +16,72 @@ var CategoryToStatic={
     SOLDIER:{
         hp:2,
         ap:1,
-        speed:10,
+        speed:25,
         bulletSpeed:10,
+        observeRange:1,
         skills:["HIT"],
     },
     TOWER:{
         hp:2,
         ap:1,
-        speed:10,
+        speed:25,
         bulletSpeed:10,
+        observeRange:3,
         skills:["STAND"],
     },
     ARROW:{
         hp:2,
         ap:1,
-        speed:10,
+        speed:25,
         bulletSpeed:10,
         skills:[],
     },
     SWORD:{
         hp:2,
         ap:1,
-        speed:10,
+        speed:25,
         bulletSpeed:10,
         skills:[],
     },
     HORSE:{
         hp:2,
         ap:1,
-        speed:10,
+        speed:25,
         bulletSpeed:10,
         skills:[],
     },
     BOW:{
         hp:2,
         ap:1,
-        speed:10,
+        speed:25,
+        bulletSpeed:10,
+        skills:[],
+    },
+    KNIFE:{
+        hp:2,
+        ap:1,
+        speed:25,
+        bulletSpeed:10,
+        skills:["HIT","STEALTH"],
+    },
+    STICK:{
+        hp:2,
+        ap:1,
+        speed:25,
+        bulletSpeed:10,
+        skills:[],
+    },
+    /*
+    BOW:8,
+    AXE:9,
+    */
+    WING:{
+        hp:2,
+        ap:1,
+        speed:50,
         bulletSpeed:10,
         skills:["SHOT"],
     },
-    /*
-    KNIFE:6,
-    STICK:7,
-    BOW:8,
-    AXE:9,
-    WING:10,*/
 }
 // url in resources/*, type: cc.SpriteFrame
 var CategoryToUrl={
@@ -80,10 +102,12 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
+        category:null,
     },
 
     initWithConfig:function(unitConfig){
         var category=unitConfig.category;
+        this.category=category;
         var sprite=this.getComponent("cc.Sprite");
         if(unitConfig.spriteFrame){
             sprite.spriteFrame=unitConfig.spriteFrame;
@@ -100,10 +124,23 @@ cc.Class({
             });
         }
         var staticAttr=CategoryToStatic[category];
-        // init skill
+        // init skill & attribute
         if(staticAttr){
             this.skillInit(staticAttr.skills);
+            this.attributeInit(staticAttr);
         }
+    },
+    
+    attributeInit:function(staticAttr){
+        var attr=this.getComponent("UnitAttributes");
+        _.each(staticAttr,function(v,k){
+            if(k=="hp"){
+                attr.hp=v;
+                attr.maxHp=v;
+            }else if(k!="skill"){
+                attr[k]=v;
+            }
+        });
     },
     skillInit:function(skills){
         var unitSkill=this.getComponent("UnitSkill");

@@ -5,6 +5,7 @@ cc.Class({
     properties: {
         tiledLayerName:"unitConfig",
         teamTiledLayerName:"teamConfig",
+        keyTiledLayerName:"keyUnit",
         tiledMapAdapter:{
             visible:false,
             get:function(){
@@ -19,11 +20,13 @@ cc.Class({
     getUnitConfigAt:function(cell){
         var category=this.getCategoryAt(cell);
         var team=this.getTeamAt(cell);
+        var key=this.getKeyAt(cell);
         if(category){
             return {
                 category:category,
                 spriteFrame:null,
                 team:team,
+                key:key,
             };
         }else{
             return null;
@@ -47,11 +50,22 @@ cc.Class({
         }
         return null;
     },
+    getKeyAt:function(cell){
+        var properties=this.tiledMapAdapter.getLayerPropertiesAt(this.keyTiledLayerName,cell);
+        if(_.isObject(properties)){
+            if(_.has(properties,"key")){
+                return properties.key;
+            }
+        }
+        return null;
+    },
     hideConfigLayer:function(){
         var teamConfigNode=this.tiledMapAdapter.getLayerNode(this.teamTiledLayerName);
         teamConfigNode.active=false;
         var unitConfigNode=this.tiledMapAdapter.getLayerNode(this.tiledLayerName);
         unitConfigNode.active=false;
+        var keyConfigNode=this.tiledMapAdapter.getLayerNode(this.keyTiledLayerName);
+        keyConfigNode.active=false;
         
     }
 });

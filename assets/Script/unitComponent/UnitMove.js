@@ -13,6 +13,8 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
+        timeSum:0,
+        updateTimeSlice:0.02,
         userInputList:{
             visible:false,
             get:function(){
@@ -170,12 +172,29 @@ cc.Class({
     },
 
     // called every frame, uncomment this function to activate update callback
-    update: function (dt) {
+    
+    update:function(dt){
+        this.sliceUpdate(dt);
+        /*
+        this.timeSum+=dt;
+        if(this.timeSum>=this.updateTimeSlice){
+            this.sliceUpdate(this.timeSum);
+            this.timeSum=0;
+        }*/
+    },
+    sliceUpdate: function (dt) {
         if(!this.unitBase.initFinished){
             return ;
         }
-        if(!this.unitSkill.canMove()){
-            // when the unit is attacking, it can not move;
+        if(this.unitSkill.isAttacking()){
+            // when the unit is attacking, it can only attack;
+            var curInput=this.userInputList.getCurrentInput();
+            var nextInput=this.userInputList.getNextInput();
+            if(_.isObject(curInput)){
+                if(curInput.type==InputType.OPER){
+                    this.updateOper(curInput,nextInput,dt);
+                }
+            }
             return ;
         }else if(this.userInputList.isFinished()){
             // user input list is empty.

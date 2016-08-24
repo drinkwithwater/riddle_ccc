@@ -1,36 +1,41 @@
 var SkillBase=require("Skill").SkillBase;
-var StandSkill=cc.Class({
+var COOL_TIME=2;
+var StraightStandSkill=cc.Class({
     extends:SkillBase,
     properties:{
-        coolTime:1,
+        coolTime:COOL_TIME,
     },
     bind:function(){
         this._super.apply(this,arguments);
         this.unitSkill.addListener("startStand",this,this.onUnitStartStand);
         this.unitSkill.addListener("updateStand",this,this.onUnitUpdateStand);
-        this.unitSkill.addListener("observe",this,this.onUnitObserveTargets);
+        this.unitSkill.addListener("observeEnemies",this,this.onUnitObserveEnemies);
     },
     cast:function(target){
-        console.log("cast stand skill");
+        var bulletMiddle=this.unitSkill.createBulletMiddle();
+        bulletMiddle.targetInter=target;
+        this.unitBase.bulletManager.skillCreateStraightBullet(bulletMiddle);
     },
-    onUnitObserveTargets:function(targets){
-        console.log(targets);
+    onUnitObserveEnemies:function(targets){
+        if(this.coolTime<=0){
+            this.cast(targets[0]);
+            this.coolTime=COOL_TIME;
+        }
     },
     onUnitStartStand:function(){
-        this.coolTime=1;
+        this.coolTime=COOL_TIME;
     },
     onUnitUpdateStand:function(dt){
         this.coolTime-=dt;
         if(this.coolTime<=0){
-            this.cast();
-            this.coolTime=1;
+            this.coolTime=0;
         }
     },
 });
-var ObserverStandSkill=cc.Class({
+var TrackStandSkill=cc.Class({
     extends:SkillBase,
     properties:{
-        coolTime:1,
+        coolTime:COOL_TIME,
     },
     bind:function(){
         this._super.apply(this,arguments);
@@ -40,16 +45,17 @@ var ObserverStandSkill=cc.Class({
     cast:function(target){
     },
     onUnitStartStand:function(){
-        this.coolTime=1;
+        this.coolTime=COOL_TIME;
     },
     onUnitUpdateStand:function(dt){
         this.coolTime-=dt;
         if(this.coolTime<=0){
             this.cast();
-            this.coolTime=1;
+            this.coolTime=COOL_TIME;
         }
     },
 });
 module.exports={
-    StandSkill:StandSkill
+    StandSkill:StraightStandSkill,
+    TrackStandSkill:TrackStandSkill
 }

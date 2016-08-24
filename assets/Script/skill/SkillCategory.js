@@ -7,6 +7,7 @@ var CategoryToClass={
     SHOT:hitSkills.ShotSkill,
     STAND:standSkills.StandSkill,
     MOVE:moveSkills.MoveSkill,
+    STEALTH:hitSkills.StealthSkill,
 }
 var Category=cc.Enum({
     HIT:1,

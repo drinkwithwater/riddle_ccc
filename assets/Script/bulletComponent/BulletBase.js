@@ -7,8 +7,10 @@ cc.Class({
 
     properties: {
         bulletId:-1,
+        sourceInter:null,
         targetInter:null,
 
+        startPoint:null,
         flyPoint:{
             visible:false,
             get:function(){
@@ -18,25 +20,38 @@ cc.Class({
 
         unitManager:UnitManager,
         cellManager:CellManager,
+        bulletManager:null,
 
-        speed:100,
+        harm:0,
+        distance:0,
+        
+        died:false,
     },
     
+    actionExplode:function(func){
+        var node=this.node;
+        node.runAction(cc.sequence(
+            cc.scaleTo(0.1,2,2),
+            cc.callFunc(func)
+        ));
+    },
 
-    initByBulletManager:function(bulletManager,point,bulletId,targetInter){
+    initByBulletManager:function(bulletManager,bulletId,bulletMiddle){
         
         this.cellManager=bulletManager.cellManager;
         this.unitManager=bulletManager.unitManager;
+        this.bulletManager=bulletManager;
         
         this.bulletId=bulletId;
-        this.targetInter=targetInter;
-        this.flyPoint.initByNode(this,point);
-    },
-
-    update: function (dt) {
-        var targetInter=this.targetInter;
-        this.flyPoint.moveDstPoint(targetInter.getPoint(),this.speed*dt);
-        this.flyPoint.updatePosition();
+        
+        this.sourceInter=bulletMiddle.sourceInter;
+        this.targetInter=bulletMiddle.targetInter;
+        this.harm=bulletMiddle.harm;
+        this.distance=bulletMiddle.distance;
+        
+        
+        this.startPoint=bulletMiddle.point;
+        this.flyPoint.initByNode(this,bulletMiddle.point);
     },
 
 });
