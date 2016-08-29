@@ -52,6 +52,11 @@ cc.Class({
             return true;
         }
     },
+    isItem:function(cell){
+        var item=this.getItemAt(cell);
+        if(item) return true;
+        else return false;
+    },
 
     /**************************
     * cell detail information *

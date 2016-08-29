@@ -180,6 +180,9 @@ cc.Class({
     unitStartStand:function(){
         this.triggerListener("startStand");
     },
+    unitHurt:function(sourceInter){
+        this.triggerListener("hurt",sourceInter);
+    },
 
     update: function (dt) {
         this.timeSum+=dt;

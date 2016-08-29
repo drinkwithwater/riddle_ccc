@@ -73,6 +73,7 @@ cc.Class({
     skillAttackNoBullet:function(bulletMiddle){
         var fromPoint=bulletMiddle.sourceInter.getPoint();
         var toPoint=bulletMiddle.targetInter.getPoint();
+        bulletMiddle.targetInter.onHurtByHit(bulletMiddle.sourceInter,bulletMiddle.harm);
         this.drawLayer.animateAttack(fromPoint,toPoint);
     },
     removeBullet:function(bulletId){

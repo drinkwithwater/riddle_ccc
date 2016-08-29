@@ -60,7 +60,13 @@ cc.Class({
 
     cellChangeHandler:function(oldCell,newCell){
         this.unitManager.unitChangeCell(this.node,oldCell,newCell);
-    }
+    },
+    
+    unitDeadHandler:function(){
+        this.getComponent("UnitInter").died=true;
+        this.getComponent("UnitMove").deadCancel();
+        this.unitManager.unitDead(this.node);
+    },
 
     // called every frame, uncomment this function to activate update callback
     // update: function (dt) {

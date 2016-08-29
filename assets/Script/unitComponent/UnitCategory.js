@@ -14,7 +14,7 @@ var Category=cc.Enum({
 });
 var CategoryToStatic={
     SOLDIER:{
-        hp:2,
+        hp:8,
         ap:1,
         speed:25,
         bulletSpeed:10,
@@ -22,15 +22,15 @@ var CategoryToStatic={
         skills:["HIT"],
     },
     TOWER:{
-        hp:2,
-        ap:1,
+        hp:3,
+        ap:2,
         speed:25,
         bulletSpeed:10,
-        observeRange:3,
+        observeRange:2,
         skills:["STAND"],
     },
     ARROW:{
-        hp:2,
+        hp:3,
         ap:1,
         speed:25,
         bulletSpeed:10,
@@ -38,7 +38,7 @@ var CategoryToStatic={
     },
     SWORD:{
         hp:2,
-        ap:1,
+        ap:3,
         speed:25,
         bulletSpeed:10,
         skills:[],
@@ -52,35 +52,39 @@ var CategoryToStatic={
     },
     BOW:{
         hp:2,
-        ap:1,
+        ap:3,
         speed:25,
         bulletSpeed:10,
-        skills:[],
+        observeRange:2,
+        skills:["TRACK_STAND"],
     },
     KNIFE:{
-        hp:2,
-        ap:1,
+        hp:1,
+        ap:4,
         speed:25,
         bulletSpeed:10,
         skills:["HIT","STEALTH"],
     },
     STICK:{
-        hp:2,
-        ap:1,
+        hp:3,
+        ap:2,
         speed:25,
         bulletSpeed:10,
-        skills:[],
+        skills:["HIT"],
     },
-    /*
-    BOW:8,
-    AXE:9,
-    */
-    WING:{
+    AXE:{
         hp:2,
-        ap:1,
+        ap:2,
+        speed:25,
+        bulletSpeed:10,
+        skills:["HURT"],
+    },
+    WING:{
+        hp:1,
+        ap:4,
         speed:50,
         bulletSpeed:10,
-        skills:["SHOT"],
+        skills:["HIT"],
     },
 }
 // url in resources/*, type: cc.SpriteFrame
@@ -129,6 +133,13 @@ cc.Class({
             this.skillInit(staticAttr.skills);
             this.attributeInit(staticAttr);
         }
+        
+        if(this.team!=1){
+            if(this.category=="TOWER"||this.category=="BOW"){
+                this.getComponent("DrawItem").showObserve();
+            }
+        }
+        
     },
     
     attributeInit:function(staticAttr){

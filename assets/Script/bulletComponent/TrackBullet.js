@@ -30,6 +30,7 @@ cc.Class({
             this.died=true;
             var self=this;
             this.actionExplode(function(){
+                self.targetInter.onHurtByBullet(self.sourceInter,self.harm);
                 self.bulletManager.removeBullet(self.bulletId)
             });
         }else{

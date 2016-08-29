@@ -9,6 +9,7 @@ cc.Class({
 
     properties: {
         //taunt:false,
+        died:false,
         _stealth:false,
         stealth:{
             get:function(){
@@ -84,9 +85,6 @@ cc.Class({
             this.operFlag=true;
             this.keyNode.active=false;
         }else{
-            if(this.getComponent("UnitCategory").category=="TOWER"){
-                this.getComponent("DrawItem").showObserve();
-            }
             this.operFlag=false;
         }
         if(config.key){
@@ -102,9 +100,8 @@ cc.Class({
         return !this.stealth;
     },
     
-    onHurtByHit:function(sourceInter,harm){
-        // not used
-        /*
+    onHurtByBack:function(sourceInter,harm){
+        var self=this;
         this.hurtNode.attr({
             scaleX:0,
             scaleY:0,
@@ -113,10 +110,20 @@ cc.Class({
         });
         this.hurtNode.runAction(cc.sequence(
             cc.scaleTo(0.1,1,1),
-            cc.fadeOut(0.1)
-        ));*/
+            cc.fadeOut(0.1),
+            cc.callFunc(function(){
+                self.getComponent("UnitAttributes").hp-=harm;
+            })
+        ));
     },
-    onHurtByBullet:function(bullet){
+    onHurtByHit:function(sourceInter,harm){
+        this.getComponent("UnitAttributes").hp-=harm;
+        this.getComponent("UnitSkill").unitHurt(sourceInter);
+    },
+    onHurtByBullet:function(sourceInter,harm){
+        this.getComponent("UnitAttributes").hp-=harm;
+        this.getComponent("UnitSkill").unitHurt(sourceInter);
+        //console.log("on hurt by bullet : "+harm);
     },
     
     getAttackVisible:function(){
@@ -148,4 +155,7 @@ cc.Class({
     isMoving:function(){
         return this.getComponent("UnitMove").isMoving();
     },
+    isDead:function(){
+        return this.died;
+    }
 });

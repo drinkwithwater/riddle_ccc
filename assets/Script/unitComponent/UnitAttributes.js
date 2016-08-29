@@ -27,6 +27,9 @@ cc.Class({
             set:function(value){
                 this.hpLabel.string=String(value);
                 this._hp=value;
+                if(this._hp<=0){
+                    this.getComponent("UnitBase").unitDeadHandler();
+                }
             },
             get:function(){
                 return this._hp;

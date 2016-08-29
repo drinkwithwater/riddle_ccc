@@ -37,7 +37,7 @@ cc.Class({
     // use this for initialization
     onLoad: function () {
         this.battleField=this.getComponent("BattleFieldComponent")
-        this.bindMouseListener();
+        //this.bindMouseListener();
     },
 
     beginTran:function(location1,location2){

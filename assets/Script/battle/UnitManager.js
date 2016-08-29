@@ -35,6 +35,10 @@ cc.Class({
             type:UnitConfigManager,
             default:null,
         },
+        keyUnitId:{
+            visible:false,
+            default:null
+        }
     },
 
     // use this for initialization
@@ -54,7 +58,8 @@ cc.Class({
         for(var x=0;x<cellRange.x;x++){
             this.cellToUnit[x]=new Array(cellRange.y);
         }
-        this.initByTest();
+        this.keyUnitId={}
+        this.initWithUnitConfig();
     },
     initByTest:function(){
         /*
@@ -70,7 +75,6 @@ cc.Class({
         this.cellToUnit[5][5]=sprite2;
         sprite2.getComponent("UnitBase").initByUnitManager(this,cc.p(5,5),1);*/
         //this.createUnit(cc.p(5,5),"SOLDIER");
-        this.initWithUnitConfig();
     },
     initWithUnitConfig:function(){
         var cellRange=this.cellManager.cellRange;
@@ -95,6 +99,10 @@ cc.Class({
         this.cellToUnit[cell.x][cell.y]=unitNode;
         unitNode.getComponent("UnitBase").initByUnitManager(this,unitConfig);
         this.node.addChild(unitNode,0,unitId);
+        // add in key unit set
+        if(unitConfig.key){
+            this.keyUnitId[unitId]=unitId;
+        }
         return unitNode;
     },
 
@@ -110,6 +118,20 @@ cc.Class({
     unitChangeCell:function(unit,oldCell,newCell){
         this.cellToUnit[oldCell.x][oldCell.y]=undefined;
         this.cellToUnit[newCell.x][newCell.y]=unit;
+    },
+    
+    unitDead:function(unitNode){
+        var unitId=unitNode.getComponent("UnitBase").unitId;
+        var cell=unitNode.getComponent("SlidePoint").cell;
+        this.cellToUnit[cell.x][cell.y]=undefined;
+        delete this.idToUnit[unitId];
+        unitNode.removeFromParent();
+        if(_.has(this.keyUnitId,unitId)){
+            delete this.keyUnitId[unitId];
+            if(_.size(this.keyUnitId)==0){
+                this.battleField.gameWin();
+            }
+        }
     },
     
     /******************

@@ -1,5 +1,5 @@
 var SkillBase=require("Skill").SkillBase;
-var COOL_TIME=2;
+var COOL_TIME=1.0;
 var StraightStandSkill=cc.Class({
     extends:SkillBase,
     properties:{
@@ -12,6 +12,7 @@ var StraightStandSkill=cc.Class({
         this.unitSkill.addListener("observeEnemies",this,this.onUnitObserveEnemies);
     },
     cast:function(target){
+        this.unitInter.stealth=false;
         var bulletMiddle=this.unitSkill.createBulletMiddle();
         bulletMiddle.targetInter=target;
         this.unitBase.bulletManager.skillCreateStraightBullet(bulletMiddle);
@@ -41,8 +42,19 @@ var TrackStandSkill=cc.Class({
         this._super.apply(this,arguments);
         this.unitSkill.addListener("startStand",this,this.onUnitStartStand);
         this.unitSkill.addListener("updateStand",this,this.onUnitUpdateStand);
+        this.unitSkill.addListener("observeEnemies",this,this.onUnitObserveEnemies);
     },
     cast:function(target){
+        this.unitInter.stealth=false;
+        var bulletMiddle=this.unitSkill.createBulletMiddle();
+        bulletMiddle.targetInter=target;
+        this.unitBase.bulletManager.skillCreateTrackBullet(bulletMiddle);
+    },
+    onUnitObserveEnemies:function(targets){
+        if(this.coolTime<=0){
+            this.cast(targets[0]);
+            this.coolTime=COOL_TIME;
+        }
     },
     onUnitStartStand:function(){
         this.coolTime=COOL_TIME;
@@ -50,8 +62,7 @@ var TrackStandSkill=cc.Class({
     onUnitUpdateStand:function(dt){
         this.coolTime-=dt;
         if(this.coolTime<=0){
-            this.cast();
-            this.coolTime=COOL_TIME;
+            this.coolTime=0;
         }
     },
 });

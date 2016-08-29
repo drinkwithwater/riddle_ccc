@@ -50,6 +50,7 @@ cc.Class({
         if(colideUnits.length>0){
             this.died=true;
             this.actionExplode(function(){
+                self.targetInter.onHurtByBullet(self.sourceInter,self.harm);
                 self.bulletManager.removeBullet(self.bulletId)
             });
         }

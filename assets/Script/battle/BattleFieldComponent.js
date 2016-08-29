@@ -8,6 +8,7 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
+        gameCtrl:null,
         tiledMap:{
             type:cc.TiledMap,
             default:null,
@@ -79,5 +80,11 @@ cc.Class({
             this.timeSum-=1;
         }
     },
+
+    gameWin:function(){
+        if(this.gameCtrl){
+            this.gameCtrl.win();
+        }
+    }
     
 });
